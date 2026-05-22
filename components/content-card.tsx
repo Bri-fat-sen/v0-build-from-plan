@@ -118,8 +118,8 @@ export function SectionHeader({ title, href, subtitle }: { title: string; href?:
   return (
     <div className="flex items-end justify-between px-4 lg:px-6">
       <div>
-        <h2 className="text-lg font-bold text-foreground sm:text-xl">{title}</h2>
-        {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+        <h2 className="font-display text-xl font-semibold text-foreground sm:text-2xl">{title}</h2>
+        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
       </div>
       {href && <Link href={href} className="text-sm font-medium text-primary hover:underline">See all</Link>}
     </div>

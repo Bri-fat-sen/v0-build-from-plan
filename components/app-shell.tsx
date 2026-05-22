@@ -56,9 +56,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {sidebarOpen ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <Headphones className="size-6 text-primary" />
-            <span className="text-lg font-bold tracking-tight text-foreground">
+            <span className="font-display text-base font-bold tracking-tight text-foreground">
               Afri<span className="text-primary">Stream</span>
             </span>
           </div>
@@ -135,7 +135,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="mt-6 border-t border-sidebar-border px-3 pt-4">
             <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Quick Links</p>
-            <Link href="/studio/artist" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground">
+            <Link href="/artist" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground">
               <Music className="size-4" /> Artist Studio
             </Link>
             <Link href="/admin" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground">
@@ -170,7 +170,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link href="/subscriptions" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
                   <ChevronDown className="size-4" /> Subscriptions
                 </Link>
-                <Link href="/studio/artist" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
+                <Link href="/artist" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
                   <Music className="size-4" /> Artist Studio
                 </Link>
                 <Link href="/admin" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50">

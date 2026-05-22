@@ -34,7 +34,7 @@ export default function OnePage() {
               <span className="mb-2 inline-block rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase text-primary-foreground">
                 {item.type === "movie" ? "New Film" : item.type === "event" ? "Live Event" : "Featured"}
               </span>
-              <h2 className="text-2xl font-bold text-white">{item.title}</h2>
+              <h2 className="font-display text-2xl font-bold text-white">{item.title}</h2>
               <p className="text-sm text-white/80">{item.subtitle}</p>
             </div>
             <div className="absolute bottom-6 right-6 opacity-0 transition-opacity group-hover:opacity-100">
@@ -93,7 +93,7 @@ export default function OnePage() {
         <div className="flex items-center gap-2 px-4 lg:px-6">
           <MapPin className="size-5 text-primary" />
           <div>
-            <h2 className="text-lg font-bold text-foreground sm:text-xl">Back Home</h2>
+            <h2 className="font-display text-xl font-semibold text-foreground">Back Home</h2>
             <p className="text-xs text-muted-foreground">Content from your connected countries</p>
           </div>
         </div>
@@ -137,12 +137,12 @@ export default function OnePage() {
       {/* Platinum Exclusives */}
       <section className="space-y-3">
         <div className="flex items-center gap-2 px-4 lg:px-6">
-          <Star className="size-5 text-primary" />
+          <Star className="size-5 text-accent" />
           <div>
-            <h2 className="text-lg font-bold text-foreground sm:text-xl">Platinum Exclusives</h2>
+            <h2 className="font-display text-xl font-semibold text-foreground">Platinum Exclusives</h2>
             <p className="text-xs text-muted-foreground">Premium content for Platinum subscribers</p>
           </div>
-          <Link href="/subscriptions" className="ml-auto rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/30">Upgrade</Link>
+          <Link href="/subscriptions" className="ml-auto rounded-full bg-accent/20 px-3 py-1 text-xs font-medium text-accent hover:bg-accent/30">Upgrade</Link>
         </div>
         <div className="no-scrollbar flex gap-4 overflow-x-auto px-4 lg:px-6">
           {mockMovies.slice(3, 7).map(movie => (

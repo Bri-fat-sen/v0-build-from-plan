@@ -9,15 +9,15 @@ import {
 import { useState } from "react"
 
 const studioLinks = [
-  { label: "Artist Studio", href: "/studio/artist", icon: Music },
-  { label: "Label Studio", href: "/studio/label", icon: Tag },
-  { label: "Creator Studio", href: "/studio/creator", icon: Users },
-  { label: "Film Studio", href: "/studio/film", icon: Film },
-  { label: "Culture Studio", href: "/studio/culture", icon: Globe },
-  { label: "Event Studio", href: "/studio/events", icon: Calendar },
-  { label: "Royalties", href: "/studio/royalties", icon: DollarSign },
-  { label: "Distribution", href: "/studio/distribution", icon: Send },
-  { label: "Licensing", href: "/studio/licensing", icon: FileText },
+  { label: "Artist Studio", href: "/artist", icon: Music },
+  { label: "Label Studio", href: "/label", icon: Tag },
+  { label: "Creator Studio", href: "/creator", icon: Users },
+  { label: "Film Studio", href: "/film", icon: Film },
+  { label: "Culture Studio", href: "/culture-studio", icon: Globe },
+  { label: "Event Studio", href: "/events", icon: Calendar },
+  { label: "Royalties", href: "/royalties", icon: DollarSign },
+  { label: "Distribution", href: "/distribution", icon: Send },
+  { label: "Licensing", href: "/licensing", icon: FileText },
 ]
 
 export default function StudioLayout({ children }: { children: React.ReactNode }) {
@@ -36,7 +36,7 @@ export default function StudioLayout({ children }: { children: React.ReactNode }
         </Link>
         <div className="flex items-center gap-2">
           <Headphones className="size-5 text-primary" />
-          <span className="text-sm font-bold text-foreground">AfriStream <span className="text-primary">Studio</span></span>
+          <span className="font-display text-sm font-bold text-foreground">AfriStream <span className="text-primary">Studio</span></span>
         </div>
       </header>
 

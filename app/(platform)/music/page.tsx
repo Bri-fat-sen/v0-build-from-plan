@@ -3,7 +3,7 @@ import { mockTracks, mockAlbums, mockArtists, mockPlaylists, genres } from "@/li
 import { TrackRow, AlbumCard, ArtistCard, PlaylistCard, SectionHeader } from "@/components/content-card"
 import { usePlayer } from "@/lib/player-context"
 import Link from "next/link"
-import { Play, Music } from "lucide-react"
+import { Play, Music, Dumbbell, Coffee, PartyPopper, Heart, Target, Church } from "lucide-react"
 
 export default function MusicPage() {
   const { playTrack, setQueue } = usePlayer()
@@ -16,7 +16,7 @@ export default function MusicPage() {
           <div className="flex items-center gap-3 mb-3">
             <Music className="size-8 text-primary" />
             <div>
-              <h1 className="text-2xl font-bold text-foreground">AfriStream Music</h1>
+              <h1 className="font-display text-2xl font-bold text-foreground">AfriStream Music</h1>
               <p className="text-sm text-muted-foreground">The sound of Africa. All genres. All countries. One stream.</p>
             </div>
           </div>
@@ -82,10 +82,17 @@ export default function MusicPage() {
       <section className="space-y-3">
         <SectionHeader title="Moods & Activities" />
         <div className="grid grid-cols-2 gap-3 px-4 sm:grid-cols-3 md:grid-cols-4 lg:px-6">
-          {["Workout", "Chill", "Party", "Romance", "Focus", "Worship"].map((mood, i) => (
-            <div key={mood} className="flex items-center gap-3 rounded-lg bg-card p-3 transition-colors hover:bg-secondary cursor-pointer">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/20 text-primary text-lg">
-                {["💪", "😌", "🎉", "💕", "🎯", "🙏"][i]}
+          {[
+            { mood: "Workout", Icon: Dumbbell },
+            { mood: "Chill", Icon: Coffee },
+            { mood: "Party", Icon: PartyPopper },
+            { mood: "Romance", Icon: Heart },
+            { mood: "Focus", Icon: Target },
+            { mood: "Worship", Icon: Church },
+          ].map(({ mood, Icon }) => (
+            <div key={mood} className="flex cursor-pointer items-center gap-3 rounded-lg bg-card p-3 transition-colors hover:bg-muted">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/15">
+                <Icon className="size-5 text-primary" />
               </div>
               <span className="text-sm font-medium text-foreground">{mood}</span>
             </div>

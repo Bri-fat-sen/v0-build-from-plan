@@ -1,32 +1,46 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import { Rubik, Unbounded, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const _rubik = Rubik({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-sans',
+})
+
+const _unbounded = Unbounded({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-display',
+})
+
+const _ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+})
 
 export const metadata: Metadata = {
-  title: 'AfriStream - Music. Movies. Creators. Culture. One Stream.',
-  description: 'Africa\'s premier entertainment streaming platform. Music, movies, creators, culture, live events - all in one stream. By Africa. For the world.',
+  title: 'AfriStream — Music. Movies. Creators. Culture. One Stream.',
+  description:
+    "Africa's premier entertainment streaming platform. Music, movies, creators, culture, live events — all in one stream. By Africa. For the world.",
   generator: 'AfriStream',
+  keywords: ['African music', 'African movies', 'Afrobeats', 'Nollywood', 'streaming'],
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0A0A0A',
+  themeColor: '#141111',
+  width: 'device-width',
+  initialScale: 1,
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark bg-background">
-      <body className="font-sans antialiased">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
-      </body>
+    <html
+      lang="en"
+      className={`dark bg-background ${_rubik.variable} ${_unbounded.variable} ${_ibmPlexMono.variable}`}
+    >
+      <body className="font-sans antialiased">{children}</body>
     </html>
   )
 }
