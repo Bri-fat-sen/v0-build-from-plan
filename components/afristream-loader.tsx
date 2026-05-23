@@ -3,7 +3,6 @@
 import { cn } from "@/lib/utils"
 
 // ─── Centered Circle Loader ───────────────────────────────────────────────────
-// Used by: loading.tsx files, page-transition between-page flash
 export function AfriStreamLoader({
   message,
   fullScreen = true,
@@ -15,65 +14,101 @@ export function AfriStreamLoader({
     <div
       className={cn(
         "flex flex-col items-center justify-center bg-background",
-        fullScreen ? "fixed inset-0 z-[200]" : "min-h-[340px] w-full"
+        fullScreen ? "fixed inset-0 z-[200]" : "min-h-[420px] w-full"
       )}
     >
-      {/* Outer pulse ring */}
+      {/* Container: big circle ring around the logo text */}
       <div className="relative flex items-center justify-center">
-        <div className="loader-pulse-ring absolute h-36 w-36 rounded-full bg-primary/10" />
-        <div className="loader-pulse-ring absolute h-28 w-28 rounded-full bg-primary/10" style={{ animationDelay: "0.4s" }} />
 
-        {/* SVG spinning arc */}
+        {/* Outer soft pulse glow */}
+        <div className="loader-pulse-ring absolute h-64 w-64 rounded-full bg-primary/[0.07]" />
+        <div className="loader-pulse-ring absolute h-52 w-52 rounded-full bg-primary/[0.05]" style={{ animationDelay: "0.6s" }} />
+
+        {/* SVG spinning arc — large ring */}
         <svg
-          width="100"
-          height="100"
-          viewBox="0 0 80 80"
-          className="relative z-10"
+          width="220"
+          height="220"
+          viewBox="0 0 220 220"
+          className="absolute"
           style={{ overflow: "visible" }}
         >
-          {/* Track ring */}
+          {/* Track */}
           <circle
-            cx="40"
-            cy="40"
-            r="35"
+            cx="110"
+            cy="110"
+            r="105"
             fill="none"
             stroke="hsl(var(--border))"
-            strokeWidth="2.5"
+            strokeWidth="1.5"
           />
           {/* Animated arc */}
           <circle
-            cx="40"
-            cy="40"
-            r="35"
+            cx="110"
+            cy="110"
+            r="105"
             fill="none"
             stroke="hsl(var(--primary))"
-            strokeWidth="2.5"
+            strokeWidth="2"
             strokeLinecap="round"
+            strokeDasharray="660"
+            strokeDashoffset="660"
             className="loader-arc"
-            transform="rotate(-90 40 40)"
+            transform="rotate(-90 110 110)"
           />
-          {/* Orange dot at center */}
-          <circle cx="40" cy="40" r="5" fill="hsl(var(--primary))" />
         </svg>
 
-        {/* "Afri" / "Stream" stacked inside the ring */}
-        <div className="absolute z-20 flex flex-col items-center leading-none">
-          <span className="font-display text-[11px] font-black tracking-tighter text-foreground">
+        {/* Logo text — big, centered, inside the ring */}
+        <div className="relative z-10 flex h-[220px] w-[220px] flex-col items-center justify-center gap-0 leading-none">
+          <span className="font-display text-5xl font-black tracking-tighter text-foreground loader-text-in">
             Afri
           </span>
-          <span className="font-display text-[11px] font-black tracking-tighter text-primary">
+          <span className="font-display text-5xl font-black tracking-tighter text-primary loader-text-in" style={{ animationDelay: "0.1s" }}>
             Stream
           </span>
         </div>
       </div>
 
       {/* Message */}
-      <p className="loader-sub-in mt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground opacity-0">
-        {message ?? "Loading"}
-      </p>
+      {message && (
+        <p className="loader-sub-in mt-10 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground opacity-0">
+          {message}
+        </p>
+      )}
     </div>
   )
 }
+
+// ─── Inline / section loader ──────────────────────────────────────────────────
+export function InlineLoader({ message }: { message?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-6 py-16">
+      <div className="relative flex items-center justify-center">
+        <svg width="120" height="120" viewBox="0 0 120 120" style={{ overflow: "visible" }}>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="hsl(var(--border))" strokeWidth="1.5" />
+          <circle
+            cx="60" cy="60" r="57"
+            fill="none"
+            stroke="hsl(var(--primary))"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray="358"
+            strokeDashoffset="358"
+            className="loader-arc"
+            transform="rotate(-90 60 60)"
+          />
+        </svg>
+        <div className="absolute flex flex-col items-center justify-center leading-none">
+          <span className="font-display text-2xl font-black tracking-tighter text-foreground">Afri</span>
+          <span className="font-display text-2xl font-black tracking-tighter text-primary">Stream</span>
+        </div>
+      </div>
+      {message && (
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{message}</p>
+      )}
+    </div>
+  )
+}
+
 
 // ─── Inline / section loader ──────────────────────────────────────────────────
 export function InlineLoader({ message, size = "md" }: { message?: string; size?: "sm" | "md" }) {
