@@ -57,8 +57,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </button>
         <Link href="/" className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
-            <span className="font-display text-base font-bold tracking-tight text-foreground">
-              Afri<span className="text-primary">Stream</span>
+            <span className="font-display text-lg font-black tracking-tighter text-foreground sm:text-xl">
+              Afri<span className="bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">Stream</span>
             </span>
           </div>
         </Link>
