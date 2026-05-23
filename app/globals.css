@@ -139,8 +139,12 @@
   box-shadow: 0 0 12px hsl(var(--primary) / 0.28);
 }
 /* Legacy aliases — keep for any existing references */
-.glow-orange    { @apply glow-primary; }
-.glow-orange-sm { @apply glow-primary-sm; }
+.glow-orange {
+  box-shadow: 0 0 28px hsl(var(--primary) / 0.35), 0 0 56px hsl(var(--primary) / 0.12);
+}
+.glow-orange-sm {
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.28);
+}
 
 /* ── Scrollbar ───────────────────────────────────────────── */
 ::-webkit-scrollbar        { width: 5px; height: 5px; }
