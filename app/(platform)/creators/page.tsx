@@ -1,116 +1,165 @@
-"use client"
-import { SafeImage as Image } from "@/components/safe-image"
-import Link from "next/link"
-import { mockCreators, creatorCategories, formatNumber } from "@/lib/mock-data"
-import { CreatorCard, SectionHeader } from "@/components/content-card"
-import { Play, Users, TrendingUp } from "lucide-react"
+'use client'
+
+import Link from 'next/link'
+import { Play, Users, TrendingUp, Crown, Zap } from 'lucide-react'
+import { SafeImage as Image } from '@/components/safe-image'
+import { mockCreators, creatorCategories, formatNumber } from '@/lib/mock-data'
 
 export default function CreatorsPage() {
   const featured = mockCreators[0]
+  const trending = mockCreators.slice(0, 3)
+  const allCreators = mockCreators
 
   return (
-    <div className="space-y-8 py-4">
-      {/* Hero */}
-      <div className="px-4 lg:px-6">
-        <div className="flex items-center gap-3 mb-4">
-          <Users className="size-6 text-primary" />
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">AfriStream Creators</h1>
-            <p className="text-sm text-muted-foreground">Discover African voices. Comedy, culture, education, and more.</p>
+    <main className="pb-12">
+      {/* HERO: Featured Creator */}
+      <div className="relative h-[65vh] min-h-[480px] overflow-hidden bg-black">
+        <div className="absolute inset-0">
+          <Image
+            src={featured.banner || 'https://picsum.photos/seed/creator1/1600/900'}
+            alt={featured.name}
+            fill
+            className="object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
+        </div>
+
+        <div className="relative flex h-full items-center px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl space-y-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Crown className="size-5 text-primary" />
+                <span className="font-mono text-xs uppercase tracking-widest text-primary">Featured Creator</span>
+              </div>
+              <h1 className="font-display text-6xl font-black tracking-tighter text-white sm:text-7xl lg:text-8xl">
+                {featured.name}
+              </h1>
+            </div>
+            <p className="max-w-lg text-lg text-white/80 leading-relaxed">{featured.bio}</p>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <div className="flex items-center gap-2">
+                <Users className="size-5 text-primary" />
+                <span className="text-white/70">{formatNumber(featured.subscribers)} subscribers</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="size-5 text-primary" />
+                <span className="text-white/70">{featured.category}</span>
+              </div>
+            </div>
+            <button className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
+              <Play className="size-5 fill-current" />
+              Watch Now
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Featured Creator */}
-      <div className="mx-4 lg:mx-6">
-        <Link href={`/creators/${featured.id}`} className="group relative overflow-hidden rounded-xl" style={{ display: "block", height: "240px" }}>
-          <Image src={featured.banner} alt={featured.name} fill className="object-cover transition-transform group-hover:scale-105" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-          <div className="absolute bottom-0 left-0 flex items-end gap-4 p-6">
-            <div className="relative size-16 overflow-hidden rounded-full border-2 border-primary">
-              <Image src={featured.avatar} alt={featured.name} fill className="object-cover" />
-            </div>
-            <div>
-              <span className="text-xs font-medium text-primary">Featured Creator</span>
-              <h2 className="text-xl font-bold text-white">{featured.name}</h2>
-              <p className="text-sm text-white/70">{featured.bio}</p>
-              <p className="text-xs text-white/50">{formatNumber(featured.subscribers)} subscribers</p>
-            </div>
+      <div className="space-y-12 px-4 sm:px-6 lg:px-8">
+        {/* Top 3 Podium */}
+        <section className="space-y-6">
+          <div className="space-y-1">
+            <h2 className="font-display text-4xl font-black text-white">Top Creators</h2>
+            <p className="text-white/50">Most-followed African creators this month</p>
           </div>
-        </Link>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {trending.map((creator, idx) => (
+              <Link
+                key={creator.id}
+                href={`/creators/${creator.id}`}
+                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 hover:border-primary/50 transition-all"
+              >
+                <div className="absolute -right-8 -top-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <span className="font-display text-9xl font-black text-primary">
+                    {idx === 0 ? '👑' : idx === 1 ? '🥈' : '🥉'}
+                  </span>
+                </div>
+                <div className="relative space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="relative size-16 overflow-hidden rounded-full border-2 border-primary">
+                      <Image
+                        src={creator.avatar}
+                        alt={creator.name}
+                        fill
+                        className="object-cover"
+                        fallbackType="avatar"
+                      />
+                    </div>
+                    <span className="font-display text-3xl font-black text-primary opacity-20">#{idx + 1}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-display text-xl font-bold text-white group-hover:text-primary transition-colors">
+                      {creator.name}
+                    </h3>
+                    <p className="text-sm text-white/50">{creator.category}</p>
+                  </div>
+                  <div className="space-y-2 pt-2 border-t border-white/10">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-white/50">Subscribers</span>
+                      <span className="font-mono text-primary">{formatNumber(creator.subscribers)}</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Categories */}
+        <section className="space-y-4">
+          <h2 className="font-display text-2xl font-bold text-white">Browse Categories</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
+            {creatorCategories.map((cat, i) => (
+              <Link
+                key={cat}
+                href={`/creators?category=${cat}`}
+                className="group flex flex-col items-center gap-2 rounded-xl bg-white/[0.03] border border-white/10 p-4 hover:bg-white/[0.06] hover:border-primary/50 transition-all"
+              >
+                <span className="text-3xl">{['🎬', '🎙️', '🎨', '📚', '⚽', '🍳'][i % 6]}</span>
+                <span className="text-center text-xs font-medium text-white/70 group-hover:text-white transition-colors">
+                  {cat}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* All Creators Grid */}
+        <section className="space-y-4">
+          <h2 className="font-display text-2xl font-bold text-white">All Creators</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {allCreators.map((creator) => (
+              <Link
+                key={creator.id}
+                href={`/creators/${creator.id}`}
+                className="group overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] hover:border-primary/50 transition-all"
+              >
+                <div className="relative aspect-square overflow-hidden">
+                  <Image
+                    src={creator.banner || creator.avatar}
+                    alt={creator.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform"
+                    fallbackType="creator"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 font-medium text-primary-foreground">
+                      <Play className="size-4 fill-current" />
+                      Visit
+                    </button>
+                  </div>
+                </div>
+                <div className="p-4 space-y-2">
+                  <h3 className="font-semibold text-white group-hover:text-primary transition-colors">
+                    {creator.name}
+                  </h3>
+                  <p className="text-xs text-white/50">{creator.category}</p>
+                  <p className="text-xs text-primary font-mono">{formatNumber(creator.subscribers)} subscribers</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
-
-      {/* Categories */}
-      <section className="space-y-3">
-        <SectionHeader title="Browse by Category" />
-        <div className="grid grid-cols-2 gap-3 px-4 sm:grid-cols-3 md:grid-cols-4 lg:px-6">
-          {creatorCategories.map((cat, i) => (
-            <div key={cat} className="flex items-center gap-3 rounded-lg bg-card p-4 cursor-pointer hover:bg-secondary transition-colors">
-              <div className="flex size-10 items-center justify-center rounded-lg text-lg"
-                style={{ background: `hsl(${i * 45}, 60%, 20%)`, color: `hsl(${i * 45}, 70%, 60%)` }}>
-                {["🎵", "🎬", "🌍", "😂", "🎙️", "✈️", "🙏", "📚"][i]}
-              </div>
-              <span className="text-sm font-medium text-foreground">{cat}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Trending Creators */}
-      <section className="space-y-3">
-        <SectionHeader title="Trending Creators" />
-        <div className="no-scrollbar flex gap-4 overflow-x-auto px-4 lg:px-6">
-          {mockCreators.map(c => <CreatorCard key={c.id} creator={c} />)}
-        </div>
-      </section>
-
-      {/* Latest Videos */}
-      <section className="space-y-3">
-        <SectionHeader title="Latest Videos" />
-        <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 lg:grid-cols-3 lg:px-6">
-          {mockCreators.slice(0, 6).map((c, i) => (
-            <Link key={c.id} href={`/creators/${c.id}`} className="group rounded-xl bg-card overflow-hidden">
-              <div className="relative aspect-video">
-                <Image src={c.banner} alt={c.name} fill className="object-cover transition-transform group-hover:scale-105" />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Play className="size-12 rounded-full bg-primary/90 p-3 text-primary-foreground" />
-                </div>
-                <div className="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white">
-                  {Math.floor(Math.random() * 15 + 3)}:{Math.floor(Math.random() * 50 + 10).toString().padStart(2, "0")}
-                </div>
-              </div>
-              <div className="flex gap-3 p-3">
-                <div className="relative size-8 flex-shrink-0 overflow-hidden rounded-full">
-                  <Image src={c.avatar} alt={c.name} fill className="object-cover" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-foreground">Latest video from {c.name}</p>
-                  <p className="text-xs text-muted-foreground">{c.name} &middot; {Math.floor(Math.random() * 500 + 10)}K views</p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Shorts */}
-      <section className="space-y-3 pb-8">
-        <SectionHeader title="Shorts" />
-        <div className="no-scrollbar flex gap-3 overflow-x-auto px-4 lg:px-6">
-          {mockCreators.map((c, i) => (
-            <div key={`short-${c.id}`} className="w-28 flex-shrink-0 cursor-pointer">
-              <div className="relative aspect-[9/16] overflow-hidden rounded-xl bg-muted">
-                <Image src={c.banner} alt="Short" fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-2 left-2 right-2">
-                  <p className="text-xs font-medium text-white truncate">{c.name}</p>
-                  <p className="text-[10px] text-white/70">{Math.floor(Math.random() * 200 + 50)}K views</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
+    </main>
   )
 }
