@@ -3,41 +3,34 @@
 import { cn } from "@/lib/utils"
 
 // ─── Full-screen cinematic loader ─────────────────────────────────────────────
-// "Afri" appears first, then "Stream" slides in orange. No shapes, no rings.
-export function AfriStreamLoader({
-  message,
-  fullScreen = true,
-}: {
-  message?: string
-  fullScreen?: boolean
-}) {
+// "Afri" appears first, then "Stream" slides in orange. Always full-screen.
+export function AfriStreamLoader({ message }: { message?: string }) {
   return (
-    <div
-      className={cn(
-        "flex flex-col items-center justify-center bg-[#080808]",
-        fullScreen ? "fixed inset-0 z-[200]" : "min-h-[420px] w-full"
-      )}
-    >
+    <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#080808]">
       {/* Logo — stacked, massive */}
       <div className="flex flex-col items-center leading-[0.9] select-none">
-        <span className="loader-afri font-display font-black tracking-tighter text-white"
-          style={{ fontSize: "clamp(4rem, 14vw, 11rem)" }}>
+        <span
+          className="loader-afri font-display font-black tracking-tighter text-white"
+          style={{ fontSize: "clamp(4.5rem, 16vw, 12rem)" }}
+        >
           Afri
         </span>
-        <span className="loader-stream font-display font-black tracking-tighter text-primary"
-          style={{ fontSize: "clamp(4rem, 14vw, 11rem)" }}>
+        <span
+          className="loader-stream font-display font-black tracking-tighter text-primary"
+          style={{ fontSize: "clamp(4.5rem, 16vw, 12rem)" }}
+        >
           Stream
         </span>
       </div>
 
-      {/* Thin orange line that grows left-to-right under the text */}
-      <div className="mt-6 h-[2px] overflow-hidden" style={{ width: "clamp(8rem, 28vw, 22rem)" }}>
+      {/* Thin orange underline that grows left to right */}
+      <div className="mt-6 h-[2px] overflow-hidden" style={{ width: "clamp(9rem, 32vw, 24rem)" }}>
         <div className="loader-line h-full w-full bg-primary" />
       </div>
 
       {/* Optional message */}
       {message && (
-        <p className="loader-message mt-8 font-mono text-[11px] uppercase tracking-[0.28em] text-white/30">
+        <p className="loader-message mt-10 font-mono text-[11px] uppercase tracking-[0.3em] text-white/25">
           {message}
         </p>
       )}
