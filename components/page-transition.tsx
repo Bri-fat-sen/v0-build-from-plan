@@ -73,12 +73,14 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
 
   return (
     <TransitionContext.Provider value={{ isTransitioning }}>
-      {/* ── Initial splash ── */}
-      {showSplash && <AfriStreamLoader message="Loading your world" />}
+      {/* ── Initial splash — full screen ── */}
+      {showSplash && <AfriStreamLoader message="Loading your world" fullScreen={true} />}
 
-      {/* ── Between-page loader ── */}
+      {/* ── Between-page — centered overlay ── */}
       {!showSplash && isTransitioning && (
-        <AfriStreamLoader message={navMessage} />
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <AfriStreamLoader message={navMessage} fullScreen={false} />
+        </div>
       )}
 
       {/* ── Page content ── */}

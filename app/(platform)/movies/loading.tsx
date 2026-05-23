@@ -1,4 +1,4 @@
 import { AfriStreamLoader } from "@/components/afristream-loader"
 export default function MoviesLoading() {
-  return <AfriStreamLoader message="Setting the scene" />
+  return <AfriStreamLoader message="Setting the scene" fullScreen={false} />
 }

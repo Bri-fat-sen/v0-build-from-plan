@@ -2,113 +2,113 @@
 
 import { cn } from "@/lib/utils"
 
-// ─── Full-Screen Splash Loader ────────────────────────────────────────────────
+// ─── Centered Circle Loader ───────────────────────────────────────────────────
+// Used by: loading.tsx files, page-transition between-page flash
 export function AfriStreamLoader({
   message,
-  showProgress = false,
-  progress = 0,
+  fullScreen = true,
 }: {
   message?: string
-  showProgress?: boolean
-  progress?: number
+  fullScreen?: boolean
 }) {
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col overflow-hidden bg-[#080808]">
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center bg-background",
+        fullScreen ? "fixed inset-0 z-[200]" : "min-h-[340px] w-full"
+      )}
+    >
+      {/* Outer pulse ring */}
+      <div className="relative flex items-center justify-center">
+        <div className="loader-pulse-ring absolute h-36 w-36 rounded-full bg-primary/10" />
+        <div className="loader-pulse-ring absolute h-28 w-28 rounded-full bg-primary/10" style={{ animationDelay: "0.4s" }} />
 
-      {/* Subtle orange fog — bottom left only */}
-      <div className="pointer-events-none absolute bottom-0 left-0 h-[45vh] w-[45vw] rounded-full bg-primary/8 blur-[140px]" />
+        {/* SVG spinning arc */}
+        <svg
+          width="100"
+          height="100"
+          viewBox="0 0 80 80"
+          className="relative z-10"
+          style={{ overflow: "visible" }}
+        >
+          {/* Track ring */}
+          <circle
+            cx="40"
+            cy="40"
+            r="35"
+            fill="none"
+            stroke="hsl(var(--border))"
+            strokeWidth="2.5"
+          />
+          {/* Animated arc */}
+          <circle
+            cx="40"
+            cy="40"
+            r="35"
+            fill="none"
+            stroke="hsl(var(--primary))"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            className="loader-arc"
+            transform="rotate(-90 40 40)"
+          />
+          {/* Orange dot at center */}
+          <circle cx="40" cy="40" r="5" fill="hsl(var(--primary))" />
+        </svg>
 
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-8 pt-8 md:px-12 md:pt-10">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/20">afristream.com</span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/20">v2.0</span>
-      </div>
-
-      {/* Main content — vertically centered */}
-      <div className="flex flex-1 flex-col items-start justify-center px-8 md:px-12 lg:px-16">
-
-        {/* Eyebrow */}
-        <div className="loader-badge mb-6 flex items-center gap-2 opacity-0">
-          <div className="h-px w-8 bg-primary" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-primary">
-            African Sound &amp; Vision
+        {/* "Afri" / "Stream" stacked inside the ring */}
+        <div className="absolute z-20 flex flex-col items-center leading-none">
+          <span className="font-display text-[11px] font-black tracking-tighter text-foreground">
+            Afri
+          </span>
+          <span className="font-display text-[11px] font-black tracking-tighter text-primary">
+            Stream
           </span>
         </div>
-
-        {/* Giant stacked wordmark */}
-        <div className="overflow-hidden">
-          <div className="loader-afri block font-display text-[18vw] font-black leading-[0.88] tracking-tighter text-white opacity-0 md:text-[16vw] lg:text-[14vw]">
-            Afri
-          </div>
-        </div>
-        <div className="overflow-hidden">
-          <div className="loader-stream block font-display text-[18vw] font-black leading-[0.88] tracking-tighter text-primary opacity-0 md:text-[16vw] lg:text-[14vw]">
-            Stream
-          </div>
-        </div>
-
-        {/* Tagline */}
-        <div className="loader-sub mt-8 opacity-0 md:mt-10">
-          <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/40">
-            {message ?? "Music · Film · Culture"}
-          </p>
-        </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="px-8 pb-8 md:px-12 md:pb-10">
-
-        {/* Animated dots */}
-        <div className="mb-5 flex items-end gap-[3px]">
-          {(["loader-dot-1","loader-dot-2","loader-dot-3","loader-dot-4","loader-dot-5"] as const).map((cls, i) => (
-            <div
-              key={i}
-              className={cn("w-[3px] rounded-full bg-primary", cls)}
-              style={{ height: 4 + i * 3 }}
-            />
-          ))}
-        </div>
-
-        {/* Progress line */}
-        <div className="h-px w-full bg-white/[0.07]">
-          <div
-            className={cn(
-              "h-full bg-primary",
-              showProgress ? "transition-[width] duration-500 ease-out" : "loader-line-fill"
-            )}
-            style={showProgress ? { width: `${progress}%` } : undefined}
-          />
-        </div>
-
-        {/* Bottom labels */}
-        <div className="mt-3 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/20">Loading</span>
-          {showProgress && (
-            <span className="font-mono text-[10px] text-primary/70">{progress}%</span>
-          )}
-        </div>
-      </div>
+      {/* Message */}
+      <p className="loader-sub-in mt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground opacity-0">
+        {message ?? "Loading"}
+      </p>
     </div>
   )
 }
 
 // ─── Inline / section loader ──────────────────────────────────────────────────
-export function InlineLoader({ message }: { message?: string }) {
+export function InlineLoader({ message, size = "md" }: { message?: string; size?: "sm" | "md" }) {
+  const dim = size === "sm" ? 52 : 72
+  const r   = size === "sm" ? 22 : 30
+  const cx  = dim / 2
+  const circumference = Math.round(2 * Math.PI * r)
+
   return (
-    <div className="flex min-h-[280px] flex-col items-center justify-center gap-8 py-16">
-      {/* Compact stacked wordmark */}
-      <div className="text-center leading-[0.9]">
-        <div className="font-display text-4xl font-black tracking-tighter text-white">Afri</div>
-        <div className="font-display text-4xl font-black tracking-tighter text-primary">Stream</div>
-      </div>
-      {/* Dots */}
-      <div className="flex items-end gap-[3px]">
-        {(["loader-dot-1","loader-dot-2","loader-dot-3","loader-dot-4","loader-dot-5"] as const).map((cls, i) => (
-          <div key={i} className={cn("w-[3px] rounded-full bg-primary", cls)} style={{ height: 4 + i * 3 }} />
-        ))}
+    <div className="flex flex-col items-center justify-center gap-5 py-12">
+      <div className="relative flex items-center justify-center">
+        <svg width={dim} height={dim} viewBox={`0 0 ${dim} ${dim}`} style={{ overflow: "visible" }}>
+          <circle cx={cx} cy={cx} r={r} fill="none" stroke="hsl(var(--border))" strokeWidth="2" />
+          <circle
+            cx={cx}
+            cy={cx}
+            r={r}
+            fill="none"
+            stroke="hsl(var(--primary))"
+            strokeWidth="2"
+            strokeLinecap="round"
+            className="loader-arc"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference}
+            transform={`rotate(-90 ${cx} ${cx})`}
+          />
+          <circle cx={cx} cy={cx} r="3" fill="hsl(var(--primary))" />
+        </svg>
+        <div className="absolute flex flex-col items-center leading-none">
+          <span className="font-display text-[8px] font-black tracking-tighter text-foreground">Afri</span>
+          <span className="font-display text-[8px] font-black tracking-tighter text-primary">Stream</span>
+        </div>
       </div>
       {message && (
-        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/30">{message}</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{message}</p>
       )}
     </div>
   )
