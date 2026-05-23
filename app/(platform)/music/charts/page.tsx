@@ -31,7 +31,7 @@ export default function ChartsPage() {
         {/* Background Image */}
         <div className="absolute inset-0 h-[70vh]">
           <Image
-            src={topTrack.cover}
+            src={topTrack.coverArt}
             alt=""
             fill
             className="object-cover"
@@ -89,7 +89,7 @@ export default function ChartsPage() {
             <Link href={`/music/track/${topTrack.id}`} className="group relative shrink-0">
               <div className="relative aspect-square w-full max-w-[280px] overflow-hidden shadow-2xl shadow-black/50 lg:max-w-[320px]">
                 <Image
-                  src={topTrack.cover}
+            src={topTrack.coverArt}
                   alt={topTrack.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -121,7 +121,7 @@ export default function ChartsPage() {
               
               <div className="mt-6 flex flex-wrap gap-6 text-sm text-white/50">
                 <div>
-                  <span className="font-mono text-2xl font-bold text-white">{formatNumber(topTrack.streams)}</span>
+                  <span className="font-mono text-2xl font-bold text-white">{formatNumber(topTrack.plays)}</span>
                   <span className="ml-2">streams this week</span>
                 </div>
                 <div className="hidden lg:block">
@@ -176,7 +176,7 @@ export default function ChartsPage() {
 
                 {/* Cover */}
                 <div className="relative size-20 shrink-0 overflow-hidden rounded-lg">
-                  <Image src={track.cover} alt={track.title} fill className="object-cover" />
+                  <Image src={track.coverArt} alt={track.title} fill className="object-cover" />
                 </div>
 
                 {/* Info */}
@@ -193,7 +193,7 @@ export default function ChartsPage() {
                         <TrendingDown className="size-3" /> {change}
                       </span>
                     )}
-                    <span className="text-muted-foreground">{formatNumber(track.streams)} streams</span>
+                    <span className="text-muted-foreground">{formatNumber(track.plays)} streams</span>
                   </div>
                 </div>
 
@@ -254,7 +254,7 @@ export default function ChartsPage() {
 
                 {/* Cover - Desktop */}
                 <div className="relative hidden size-12 overflow-hidden rounded lg:block">
-                  <Image src={track.cover} alt={track.title} fill className="object-cover" />
+                  <Image src={track.coverArt} alt={track.title} fill className="object-cover" />
                   <div className={cn(
                     "absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 transition-opacity",
                     isHovered && "opacity-100"
@@ -272,7 +272,7 @@ export default function ChartsPage() {
                 {/* Streams - Desktop */}
                 <div className="hidden text-right lg:block">
                   <span className="font-mono text-sm text-muted-foreground">
-                    {formatNumber(track.streams)}
+                    {formatNumber(track.plays)}
                   </span>
                 </div>
 
