@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   Search, Bell, User, Home, Library, Music, Film, Users, Globe, Radio, Menu,
-  X, ChevronDown, Settings, History, Download, Bookmark, Heart, Headphones,
+  X, ChevronDown, Settings, History, Download, Bookmark, Heart,
 } from "lucide-react"
 import { MiniPlayer } from "@/components/player/mini-player"
 import { FullScreenPlayer } from "@/components/player/full-screen-player"
@@ -57,7 +57,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </button>
         <Link href="/" className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
-            <Headphones className="size-6 text-primary" />
             <span className="font-display text-base font-bold tracking-tight text-foreground">
               Afri<span className="text-primary">Stream</span>
             </span>
