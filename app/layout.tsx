@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Rubik, Unbounded, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import { UserProvider } from '@/lib/user-context'
+import { PageTransitionProvider } from '@/components/page-transition'
 
 const _rubik = Rubik({
   subsets: ['latin'],
@@ -42,7 +43,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`dark bg-background ${_rubik.variable} ${_unbounded.variable} ${_ibmPlexMono.variable}`}
     >
       <body className="font-sans antialiased">
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          <PageTransitionProvider>
+            {children}
+          </PageTransitionProvider>
+        </UserProvider>
       </body>
     </html>
   )
