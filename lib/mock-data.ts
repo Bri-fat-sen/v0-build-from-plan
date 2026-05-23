@@ -153,10 +153,60 @@ export const creatorCategories = [
 ];
 
 export const subscriptionTiers = [
-  { name: "Free", price: "$0", features: ["Ad-supported music", "Limited skips", "Browse content", "72hr free trial of Premium"] },
-  { name: "Basic", price: "$3.99/mo", features: ["Ad-free music", "Standard audio quality", "Unlimited skips", "1 device", "AfriStream Radio"] },
-  { name: "Premium", price: "$7.99/mo", features: ["Ad-free everything", "HD audio & video", "Offline downloads", "3 devices", "Lyrics", "Early releases", "Concert pre-sale"] },
-  { name: "Platinum", price: "$14.99/mo", features: ["Everything in Premium", "Lossless/spatial audio", "4K video", "6 devices", "Exclusive content", "Virtual meet & greets", "Priority support", "Creator tip credits"] },
+  { 
+    name: "Free", 
+    price: "$0", 
+    priceLocal: "Free", 
+    billing: "forever",
+    features: ["Ad-supported music streaming", "Standard audio quality", "Limited skips (6/hour)", "Browse all content", "72hr Premium trial"], 
+    highlight: false,
+    cta: "Current Plan"
+  },
+  { 
+    name: "Basic", 
+    price: "$1.99/mo", 
+    priceLocal: "KES 250/mo", 
+    billing: "monthly",
+    features: ["Ad-free music", "Standard audio quality", "Unlimited skips", "1 device at a time", "AfriStream Radio", "Offline mode (50 songs)"], 
+    highlight: false,
+    cta: "Start Basic"
+  },
+  { 
+    name: "Premium", 
+    price: "$4.99/mo", 
+    priceLocal: "KES 500/mo", 
+    billing: "monthly",
+    features: ["Ad-free music & video", "HD audio & 1080p video", "Unlimited offline downloads", "3 devices", "Lyrics & song credits", "Early access to releases", "Concert pre-sale access"], 
+    highlight: true,
+    cta: "Go Premium"
+  },
+  { 
+    name: "Platinum", 
+    price: "$9.99/mo", 
+    priceLocal: "KES 1000/mo", 
+    billing: "monthly",
+    features: ["Everything in Premium", "Lossless & spatial audio", "4K video streaming", "6 devices", "Exclusive Platinum content", "Virtual meet & greets", "Priority customer support", "$5 creator tip credits/month", "AfriStream Platinum badge"], 
+    highlight: false,
+    cta: "Go Platinum"
+  },
+  { 
+    name: "Family", 
+    price: "$7.99/mo", 
+    priceLocal: "KES 800/mo", 
+    billing: "monthly",
+    features: ["All Premium features", "Up to 6 family members", "Individual recommendations", "Parental controls", "Family Mix playlists", "Shared payment"], 
+    highlight: false,
+    cta: "Start Family"
+  },
+  { 
+    name: "Creator Pro", 
+    price: "$14.99/mo", 
+    priceLocal: "KES 1500/mo", 
+    billing: "monthly",
+    features: ["All Platinum features", "Priority distribution", "Advanced analytics dashboard", "Promotional tools", "Verified creator badge", "Direct fan messaging", "Revenue optimization AI", "Dedicated account manager"], 
+    highlight: false,
+    cta: "Go Creator Pro"
+  },
 ];
 
 export const mockPlaylists = [

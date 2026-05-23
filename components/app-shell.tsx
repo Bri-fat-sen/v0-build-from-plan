@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   Search, Bell, User, Home, Library, Music, Film, Users, Globe, Radio, Menu,
-  X, ChevronDown, Settings, History, Download, Bookmark, Heart, ShoppingBag,
+  X, ChevronDown, Settings, History, Download, Bookmark, Heart, ShoppingBag, Gift, Sparkles, MapPin,
 } from "lucide-react"
 import { MiniPlayer } from "@/components/player/mini-player"
 import { FullScreenPlayer } from "@/components/player/full-screen-player"
@@ -28,6 +28,9 @@ const sidebarLinks = [
   { label: "Watchlist", href: "/library?tab=watchlist", icon: Bookmark },
   { label: "Downloads", href: "/library?tab=downloads", icon: Download },
   { label: "History", href: "/library?tab=history", icon: History },
+  { label: "Diaspora", href: "/diaspora", icon: MapPin },
+  { label: "Rewind", href: "/rewind", icon: Sparkles },
+  { label: "Tips & Gifts", href: "/tips", icon: Gift },
   { label: "Settings", href: "/settings", icon: Settings },
 ]
 
