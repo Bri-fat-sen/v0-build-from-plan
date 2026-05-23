@@ -1,11 +1,14 @@
 "use client"
+
 import { useState } from "react"
 import { subscriptionTiers } from "@/lib/mock-data"
+import { useUser } from "@/lib/user-context"
 import { cn } from "@/lib/utils"
-import { Check, Star, Zap, Crown, Music, Users, Briefcase, Smartphone, CreditCard, Globe, ChevronDown, Shield, Sparkles } from "lucide-react"
-
-const tierIcons = [Music, Zap, Star, Crown, Users, Briefcase]
-const tierColors = ["text-muted-foreground", "text-blue-400", "text-primary", "text-yellow-400", "text-green-400", "text-purple-400"]
+import Link from "next/link"
+import { 
+  Check, Star, Zap, Crown, Music, Users, Film, Smartphone, CreditCard, 
+  Globe, ChevronDown, Shield, Sparkles, Heart, ArrowRight, Video, Play
+} from "lucide-react"
 
 const paymentMethods = [
   { id: "mpesa", name: "M-Pesa", icon: Smartphone, region: "Kenya, Tanzania", popular: true },
@@ -23,158 +26,343 @@ const telcoBundles = [
   { carrier: "Airtel", country: "Uganda", bundle: "AfriStream Basic", price: "UGX 7,500/mo", savings: "Mobile billing" },
 ]
 
+// Content-based tier groupings
+const contentTiers = [
+  { id: "music", icon: Music, color: "text-primary", bgColor: "bg-primary/20", label: "Music Only" },
+  { id: "video", icon: Video, color: "text-purple-500", bgColor: "bg-purple-500/20", label: "Video Only" },
+  { id: "movies", icon: Film, color: "text-pink-500", bgColor: "bg-pink-500/20", label: "Movies Only" },
+  { id: "premium", icon: Star, color: "text-yellow-400", bgColor: "bg-yellow-500/20", label: "All Content" },
+  { id: "platinum", icon: Crown, color: "text-yellow-400", bgColor: "bg-yellow-500/20", label: "Everything + Exclusive" },
+]
+
 export default function SubscriptionsPage() {
+  const { user, subscription } = useUser()
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly")
   const [showLocalPricing, setShowLocalPricing] = useState(false)
   const [selectedPayment, setSelectedPayment] = useState("mpesa")
   const [expandedTier, setExpandedTier] = useState<string | null>(null)
 
-  // Filter to show only main 4 tiers in grid, show Family and Creator Pro separately
-  const mainTiers = subscriptionTiers.slice(0, 4)
-  const additionalTiers = subscriptionTiers.slice(4)
+  // Group tiers by category
+  const singleContentTiers = subscriptionTiers.filter(t => ["music", "video", "movies"].includes(t.id))
+  const bundleTiers = subscriptionTiers.filter(t => ["premium", "platinum"].includes(t.id))
+  const specialTiers = subscriptionTiers.filter(t => ["family", "creator_pro"].includes(t.id))
+
+  const getTierIcon = (id: string) => {
+    const tier = contentTiers.find(t => t.id === id)
+    return tier?.icon || Star
+  }
+
+  const getTierColor = (id: string) => {
+    const tier = contentTiers.find(t => t.id === id)
+    return tier?.color || "text-primary"
+  }
 
   return (
-    <div className="space-y-8 py-4">
-      {/* Header */}
-      <div className="px-4 text-center lg:px-6">
-        <h1 className="font-display text-3xl font-bold text-foreground">Choose Your Plan</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Unlock the full power of AfriStream. Cancel anytime.</p>
+    <div className="min-h-screen space-y-10 pb-32">
+      {/* Hero Header with User-Centric Messaging */}
+      <div className="relative overflow-hidden bg-gradient-to-b from-primary/20 via-primary/5 to-transparent px-4 pb-10 pt-8 lg:px-6">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
         
-        {/* Billing Toggle */}
-        <div className="mt-6 flex items-center justify-center gap-4">
-          <button 
-            onClick={() => setBillingCycle("monthly")}
-            className={cn("rounded-full px-4 py-2 text-sm font-medium transition-colors", billingCycle === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
-          >
-            Monthly
-          </button>
-          <button 
-            onClick={() => setBillingCycle("annual")}
-            className={cn("flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors", billingCycle === "annual" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
-          >
-            Annual <span className="rounded bg-green-500/20 px-1.5 py-0.5 text-xs text-green-400">Save 20%</span>
-          </button>
-        </div>
-
-        {/* Currency Toggle */}
-        <button 
-          onClick={() => setShowLocalPricing(!showLocalPricing)}
-          className="mt-3 flex items-center gap-1 mx-auto text-xs text-muted-foreground hover:text-foreground"
-        >
-          <Globe className="size-3" />
-          {showLocalPricing ? "Show USD pricing" : "Show local pricing (KES)"}
-        </button>
-      </div>
-
-      {/* Main Subscription Tiers */}
-      <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
-        {mainTiers.map((tier, i) => {
-          const Icon = tierIcons[i]
-          const isPremium = tier.name === "Premium"
-          const price = showLocalPricing ? tier.priceLocal : tier.price
-          const annualPrice = tier.name === "Free" ? "$0" : `$${(parseFloat(tier.price.replace(/[^0-9.]/g, "")) * 0.8 * 12).toFixed(0)}/yr`
+        <div className="relative mx-auto max-w-3xl text-center">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-green-500/20 px-4 py-1.5 text-sm font-medium text-green-400">
+            <Heart className="size-4 fill-green-400" />
+            70% Goes Directly to Creators
+          </div>
           
-          return (
-            <div key={tier.name}
-              className={cn(
-                "relative flex flex-col rounded-2xl border p-6 transition-all",
-                isPremium
-                  ? "border-primary bg-primary/5 glow-orange-sm"
-                  : "border-border bg-card hover:border-muted-foreground/30"
-              )}>
-              {isPremium && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-bold text-primary-foreground">
-                  Most Popular
-                </div>
-              )}
-              {tier.name === "Platinum" && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-yellow-500 px-4 py-1 text-xs font-bold text-black">
-                  Best Value
-                </div>
-              )}
-              
-              <div className="mb-4 flex items-center gap-2">
-                <Icon className={cn("size-5", tierColors[i])} />
-                <h2 className="font-display text-lg font-bold text-foreground">{tier.name}</h2>
-              </div>
-              
-              <div className="mb-1">
-                <span className="font-mono text-3xl font-bold tabular-nums text-foreground">
-                  {billingCycle === "annual" && tier.name !== "Free" ? annualPrice : price}
-                </span>
-              </div>
-              {billingCycle === "annual" && tier.name !== "Free" && (
-                <p className="mb-4 text-xs text-green-400">Save 20% with annual billing</p>
-              )}
-              {tier.name === "Free" && <p className="mb-4 text-xs text-muted-foreground">No credit card required</p>}
-              
-              <ul className="mb-6 flex-1 space-y-2.5">
-                {tier.features.slice(0, expandedTier === tier.name ? undefined : 5).map((feature: string) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className={cn("mt-0.5 size-4 flex-shrink-0", isPremium ? "text-primary" : tierColors[i])} />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              
-              {tier.features.length > 5 && (
-                <button 
-                  onClick={() => setExpandedTier(expandedTier === tier.name ? null : tier.name)}
-                  className="mb-4 flex items-center gap-1 text-xs text-primary hover:underline"
-                >
-                  {expandedTier === tier.name ? "Show less" : `+${tier.features.length - 5} more features`}
-                  <ChevronDown className={cn("size-3 transition-transform", expandedTier === tier.name && "rotate-180")} />
-                </button>
-              )}
-              
-              <button className={cn(
-                "w-full rounded-full py-3 text-sm font-bold transition-colors",
-                isPremium
-                  ? "bg-primary text-primary-foreground glow-orange-sm hover:bg-primary/90"
-                  : tier.name === "Free"
-                    ? "bg-secondary text-foreground hover:bg-muted"
-                    : tier.name === "Platinum"
-                      ? "border-2 border-yellow-500 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20"
-                      : "border border-border bg-transparent text-foreground hover:bg-secondary"
-              )}>
-                {tier.cta}
-              </button>
-            </div>
-          )
-        })}
-      </div>
+          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+            Your Money. Their Music.
+          </h1>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+            Unlike other platforms, your subscription goes directly to the artists you listen to, creators you watch, and filmmakers you support. Not a pooled pot. Real, direct support.
+          </p>
+          
+          {/* Billing Toggle */}
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <button 
+              onClick={() => setBillingCycle("monthly")}
+              className={cn("rounded-full px-5 py-2.5 text-sm font-medium transition-colors", billingCycle === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
+            >
+              Monthly
+            </button>
+            <button 
+              onClick={() => setBillingCycle("annual")}
+              className={cn("flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors", billingCycle === "annual" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground")}
+            >
+              Annual <span className="rounded bg-green-500/20 px-1.5 py-0.5 text-xs text-green-400">Save 20%</span>
+            </button>
+          </div>
 
-      {/* Additional Plans (Family & Creator Pro) */}
-      <div className="px-4 lg:px-6">
-        <h2 className="mb-4 font-display text-lg font-semibold text-foreground">Special Plans</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {additionalTiers.map((tier, idx) => {
-            const i = idx + 4
-            const Icon = tierIcons[i]
-            return (
-              <div key={tier.name} className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4">
-                <div className={cn("flex size-12 items-center justify-center rounded-xl", tier.name === "Family" ? "bg-green-500/15" : "bg-purple-500/15")}>
-                  <Icon className={cn("size-6", tierColors[i])} />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-display font-semibold text-foreground">{tier.name}</h3>
-                    <span className="font-mono text-sm tabular-nums text-muted-foreground">{tier.price}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{tier.features[0]}</p>
-                </div>
-                <button className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary">
-                  {tier.cta}
-                </button>
-              </div>
-            )
-          })}
+          {/* Currency Toggle */}
+          <button 
+            onClick={() => setShowLocalPricing(!showLocalPricing)}
+            className="mt-3 flex items-center gap-1 mx-auto text-xs text-muted-foreground hover:text-foreground"
+          >
+            <Globe className="size-3" />
+            {showLocalPricing ? "Show USD pricing" : "Show local pricing (KES)"}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Money & Payment Methods */}
-      <div className="px-4 lg:px-6">
-        <div className="rounded-2xl border border-border bg-card p-6">
+      <div className="mx-auto max-w-6xl space-y-10 px-4 lg:px-6">
+        {/* User-Centric Explanation */}
+        <section className="glass-card overflow-hidden rounded-2xl p-6">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+            <div className="flex-1">
+              <h2 className="font-display text-xl font-bold text-foreground">How It Works</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                With user-centric royalties, if you only listen to 5 artists this month, those 5 artists get 100% of your creator share. Your $7.99 doesn&apos;t fund artists you&apos;ve never heard of.
+              </p>
+            </div>
+            <Link 
+              href="/impact" 
+              className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              See Your Impact <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          
+          {/* Visual Flow */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl bg-card/50 p-4 text-center">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/20">
+                <span className="font-display text-lg font-bold text-primary">1</span>
+              </div>
+              <h3 className="mt-3 text-sm font-semibold text-foreground">You Subscribe</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Choose your content: Music, Video, Movies, or All</p>
+            </div>
+            <div className="rounded-xl bg-card/50 p-4 text-center">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/20">
+                <span className="font-display text-lg font-bold text-primary">2</span>
+              </div>
+              <h3 className="mt-3 text-sm font-semibold text-foreground">You Enjoy</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Stream what you love. We track YOUR consumption.</p>
+            </div>
+            <div className="rounded-xl bg-card/50 p-4 text-center">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-green-500/20">
+                <span className="font-display text-lg font-bold text-green-500">3</span>
+              </div>
+              <h3 className="mt-3 text-sm font-semibold text-foreground">Creators Get Paid</h3>
+              <p className="mt-1 text-xs text-muted-foreground">70% goes to the creators YOU support</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Single Content Tiers */}
+        <section>
+          <div className="mb-4 flex items-center gap-2">
+            <h2 className="font-display text-xl font-semibold text-foreground">Choose Your Content</h2>
+            <span className="text-xs text-muted-foreground">(Pick one or bundle)</span>
+          </div>
+          
+          <div className="grid gap-4 sm:grid-cols-3">
+            {singleContentTiers.map((tier) => {
+              const Icon = getTierIcon(tier.id)
+              const colorClass = getTierColor(tier.id)
+              const price = showLocalPricing ? tier.priceLocal : tier.price
+              const annualPrice = billingCycle === "annual" ? tier.priceAnnual : price
+              
+              return (
+                <div key={tier.id} className="glass-card flex flex-col rounded-2xl p-6">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className={cn("flex size-12 items-center justify-center rounded-xl", 
+                      tier.id === "music" ? "bg-primary/20" : 
+                      tier.id === "video" ? "bg-purple-500/20" : "bg-pink-500/20"
+                    )}>
+                      <Icon className={cn("size-6", colorClass)} />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-lg font-bold text-foreground">{tier.name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {tier.id === "music" ? "Artists you stream" :
+                         tier.id === "video" ? "Creators you watch" : "Filmmakers you support"}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <span className="font-mono text-3xl font-bold tabular-nums text-foreground">{annualPrice}</span>
+                    {billingCycle === "annual" && (
+                      <p className="text-xs text-green-400">Save 20%</p>
+                    )}
+                  </div>
+                  
+                  {/* Royalty Split Indicator */}
+                  <div className="mb-4 rounded-lg bg-green-500/10 p-3">
+                    <p className="text-xs text-green-400">
+                      <span className="font-bold">{tier.royaltySplit.creators}%</span> of your sub goes to creators you {tier.id === "music" ? "listen to" : "watch"}
+                    </p>
+                  </div>
+                  
+                  <ul className="mb-6 flex-1 space-y-2">
+                    {tier.features.slice(0, 5).map((feature: string) => (
+                      <li key={feature} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <Check className={cn("mt-0.5 size-4 flex-shrink-0", colorClass)} />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <button className={cn(
+                    "w-full rounded-full py-3 text-sm font-bold transition-colors",
+                    "border border-border bg-transparent text-foreground hover:bg-secondary"
+                  )}>
+                    {tier.cta}
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Bundle Tiers */}
+        <section>
+          <div className="mb-4 flex items-center gap-2">
+            <h2 className="font-display text-xl font-semibold text-foreground">Bundle & Save</h2>
+            <span className="rounded-full bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-400">Best Value</span>
+          </div>
+          
+          <div className="grid gap-4 sm:grid-cols-2">
+            {bundleTiers.map((tier) => {
+              const isPremium = tier.id === "premium"
+              const price = showLocalPricing ? tier.priceLocal : tier.price
+              const annualPrice = billingCycle === "annual" ? tier.priceAnnual : price
+              
+              return (
+                <div key={tier.id} className={cn(
+                  "relative flex flex-col rounded-2xl border p-6",
+                  isPremium ? "border-primary bg-primary/5 glow-orange-sm" : "border-yellow-500/50 bg-yellow-500/5"
+                )}>
+                  {isPremium && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-bold text-primary-foreground">
+                      Most Popular
+                    </div>
+                  )}
+                  {!isPremium && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-yellow-500 px-4 py-1 text-xs font-bold text-black">
+                      Best Value
+                    </div>
+                  )}
+                  
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className={cn("flex size-12 items-center justify-center rounded-xl", 
+                      isPremium ? "bg-primary/20" : "bg-yellow-500/20"
+                    )}>
+                      {isPremium ? <Star className="size-6 text-primary" /> : <Crown className="size-6 text-yellow-400" />}
+                    </div>
+                    <div>
+                      <h3 className="font-display text-xl font-bold text-foreground">{tier.name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {isPremium ? "Music + Video + Movies" : "Everything + Exclusive Content"}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <span className="font-mono text-4xl font-bold tabular-nums text-foreground">{annualPrice}</span>
+                    {billingCycle === "annual" && <p className="text-xs text-green-400">Save 20%</p>}
+                  </div>
+                  
+                  {/* Royalty Split */}
+                  <div className={cn("mb-4 rounded-lg p-3", isPremium ? "bg-green-500/10" : "bg-green-500/15")}>
+                    <p className="text-sm text-green-400">
+                      <span className="font-bold">{tier.royaltySplit.creators}%</span> of your subscription goes directly to creators
+                    </p>
+                  </div>
+                  
+                  {/* Content Icons */}
+                  <div className="mb-4 flex gap-2">
+                    <div className="flex items-center gap-1.5 rounded-full bg-primary/20 px-3 py-1">
+                      <Music className="size-3.5 text-primary" />
+                      <span className="text-xs text-primary">Music</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-full bg-purple-500/20 px-3 py-1">
+                      <Video className="size-3.5 text-purple-500" />
+                      <span className="text-xs text-purple-500">Video</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-full bg-pink-500/20 px-3 py-1">
+                      <Film className="size-3.5 text-pink-500" />
+                      <span className="text-xs text-pink-500">Movies</span>
+                    </div>
+                    {!isPremium && (
+                      <div className="flex items-center gap-1.5 rounded-full bg-yellow-500/20 px-3 py-1">
+                        <Play className="size-3.5 text-yellow-400" />
+                        <span className="text-xs text-yellow-400">Live</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <ul className="mb-6 flex-1 space-y-2">
+                    {tier.features.slice(0, expandedTier === tier.id ? undefined : 6).map((feature: string) => (
+                      <li key={feature} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <Check className={cn("mt-0.5 size-4 flex-shrink-0", isPremium ? "text-primary" : "text-yellow-400")} />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  {tier.features.length > 6 && (
+                    <button 
+                      onClick={() => setExpandedTier(expandedTier === tier.id ? null : tier.id)}
+                      className="mb-4 flex items-center gap-1 text-xs text-primary hover:underline"
+                    >
+                      {expandedTier === tier.id ? "Show less" : `+${tier.features.length - 6} more`}
+                      <ChevronDown className={cn("size-3 transition-transform", expandedTier === tier.id && "rotate-180")} />
+                    </button>
+                  )}
+                  
+                  <button className={cn(
+                    "w-full rounded-full py-3.5 text-sm font-bold transition-colors",
+                    isPremium 
+                      ? "bg-primary text-primary-foreground glow-orange-sm hover:bg-primary/90"
+                      : "bg-yellow-500 text-black hover:bg-yellow-400"
+                  )}>
+                    {tier.cta}
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Special Plans */}
+        <section>
+          <h2 className="mb-4 font-display text-xl font-semibold text-foreground">Special Plans</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {specialTiers.map((tier) => {
+              const isFamily = tier.id === "family"
+              const price = showLocalPricing ? tier.priceLocal : tier.price
+              
+              return (
+                <div key={tier.id} className="glass-card flex items-center gap-4 rounded-xl p-5">
+                  <div className={cn("flex size-14 items-center justify-center rounded-xl", 
+                    isFamily ? "bg-green-500/20" : "bg-purple-500/20"
+                  )}>
+                    {isFamily ? <Users className="size-7 text-green-500" /> : <Sparkles className="size-7 text-purple-500" />}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-display text-lg font-bold text-foreground">{tier.name}</h3>
+                      <span className="font-mono text-sm tabular-nums text-muted-foreground">{price}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {isFamily ? "Up to 6 family members with individual profiles" : "For artists & creators - Full studio access + distribution"}
+                    </p>
+                    <p className="mt-1 text-xs text-green-400">{tier.royaltySplit.creators}% to creators</p>
+                  </div>
+                  <button className={cn(
+                    "rounded-full px-5 py-2.5 text-sm font-medium transition-colors",
+                    isFamily ? "bg-green-500/20 text-green-400 hover:bg-green-500/30" : "bg-purple-500/20 text-purple-400 hover:bg-purple-500/30"
+                  )}>
+                    {tier.cta}
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Payment Methods */}
+        <section className="glass-card rounded-2xl p-6">
           <div className="mb-4 flex items-center gap-2">
             <Smartphone className="size-5 text-primary" />
             <h2 className="font-display text-lg font-semibold text-foreground">Pay Your Way</h2>
@@ -207,18 +395,15 @@ export default function SubscriptionsPage() {
               </button>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Telco Bundles */}
-      <div className="px-4 lg:px-6">
-        <div className="rounded-2xl border border-green-500/30 bg-green-500/5 p-6">
+        {/* Telco Bundles */}
+        <section className="rounded-2xl border border-green-500/30 bg-green-500/5 p-6">
           <div className="mb-4 flex items-center gap-2">
             <Sparkles className="size-5 text-green-400" />
             <h2 className="font-display text-lg font-semibold text-foreground">Carrier Bundles</h2>
-            <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-400">Exclusive Deals</span>
+            <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs text-green-400">Exclusive</span>
           </div>
-          <p className="mb-6 text-sm text-muted-foreground">Pay through your mobile carrier and get bonus data or discounts</p>
           
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {telcoBundles.map(bundle => (
@@ -235,11 +420,9 @@ export default function SubscriptionsPage() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Trust Signals */}
-      <div className="px-4 lg:px-6">
+        {/* Trust Signals */}
         <div className="flex flex-wrap items-center justify-center gap-6 rounded-2xl bg-muted/30 py-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Shield className="size-4 text-green-400" />
@@ -250,33 +433,13 @@ export default function SubscriptionsPage() {
             <span>Cancel anytime</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Smartphone className="size-4 text-green-400" />
-            <span>Mobile money accepted</span>
+            <Heart className="size-4 text-green-400" />
+            <span>70% to creators</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Globe className="size-4 text-green-400" />
-            <span>Works in 50+ countries</span>
+            <span>50+ countries</span>
           </div>
-        </div>
-      </div>
-
-      {/* FAQ */}
-      <div className="mx-auto max-w-2xl px-4 pb-8 lg:px-6">
-        <h2 className="mb-4 text-center font-display text-lg font-bold text-foreground">Frequently Asked Questions</h2>
-        <div className="space-y-3">
-          {[
-            { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription at any time. You will continue to have access until the end of your billing period." },
-            { q: "How does mobile money payment work?", a: "Select your mobile money provider, enter your phone number, and approve the payment on your phone. It is instant and secure." },
-            { q: "What is the difference between Premium and Platinum?", a: "Platinum includes lossless audio, 4K video, 6 devices, exclusive content, virtual meet & greets, and $5 monthly tip credits for creators." },
-            { q: "Can I pay with airtime?", a: "Yes, in select countries you can pay using airtime through our carrier billing partners (MTN, Safaricom, Vodacom, Airtel)." },
-            { q: "Is there a student discount?", a: "Yes, students get 50% off Premium. Verify your student status with your university email to unlock the discount." },
-            { q: "What is the Creator Pro plan?", a: "Creator Pro is for artists, filmmakers, and content creators who want priority distribution, advanced analytics, and promotional tools." },
-          ].map(faq => (
-            <div key={faq.q} className="rounded-xl bg-card p-4">
-              <p className="text-sm font-semibold text-foreground">{faq.q}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{faq.a}</p>
-            </div>
-          ))}
         </div>
       </div>
     </div>

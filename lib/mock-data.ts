@@ -269,56 +269,106 @@ export const creatorCategories = [
 
 export const subscriptionTiers = [
   { 
+    id: "free",
     name: "Free", 
     price: "$0", 
     priceLocal: "Free", 
+    priceAnnual: "$0",
     billing: "forever",
-    features: ["Ad-supported music streaming", "Standard audio quality", "Limited skips (6/hour)", "Browse all content", "72hr Premium trial"], 
+    contentAccess: ["music_limited"],
+    royaltySplit: { creators: 0, platform: 100 }, // Ad-supported, platform keeps ad revenue
+    features: ["Ad-supported music (shuffle only)", "Standard audio quality", "Limited skips (6/hour)", "Browse all content", "72hr Premium trial"], 
     highlight: false,
     cta: "Current Plan"
   },
   { 
-    name: "Basic", 
-    price: "$1.99/mo", 
-    priceLocal: "KES 250/mo", 
+    id: "music",
+    name: "Music", 
+    price: "$2.99/mo", 
+    priceLocal: "KES 300/mo", 
+    priceAnnual: "$29.99/yr",
     billing: "monthly",
-    features: ["Ad-free music", "Standard audio quality", "Unlimited skips", "1 device at a time", "AfriStream Radio", "Offline mode (50 songs)"], 
+    contentAccess: ["music"],
+    royaltySplit: { creators: 70, platform: 30 }, // User-centric: 70% to artists you stream
+    features: ["Ad-free music streaming", "HD audio quality", "Unlimited skips & plays", "Offline downloads (100 songs)", "Lyrics & song credits", "Your money goes to artists YOU listen to"], 
     highlight: false,
-    cta: "Start Basic"
+    cta: "Start Music"
   },
   { 
-    name: "Premium", 
+    id: "video",
+    name: "Video", 
+    price: "$3.99/mo", 
+    priceLocal: "KES 400/mo", 
+    priceAnnual: "$39.99/yr",
+    billing: "monthly",
+    contentAccess: ["creators", "shorts"],
+    royaltySplit: { creators: 70, platform: 30 }, // User-centric: 70% to creators you watch
+    features: ["Ad-free creator videos", "1080p streaming", "Podcasts & shorts", "Offline downloads", "Support creators directly", "Your money goes to creators YOU watch"], 
+    highlight: false,
+    cta: "Start Video"
+  },
+  { 
+    id: "movies",
+    name: "Movies", 
     price: "$4.99/mo", 
     priceLocal: "KES 500/mo", 
+    priceAnnual: "$49.99/yr",
     billing: "monthly",
-    features: ["Ad-free music & video", "HD audio & 1080p video", "Unlimited offline downloads", "3 devices", "Lyrics & song credits", "Early access to releases", "Concert pre-sale access"], 
+    contentAccess: ["movies", "series"],
+    royaltySplit: { creators: 65, platform: 35 }, // Slightly more platform cut for licensing
+    features: ["Full movie library", "4K streaming", "New releases & premieres", "Download for offline", "Exclusive African cinema", "Your money funds filmmakers YOU watch"], 
+    highlight: false,
+    cta: "Start Movies"
+  },
+  { 
+    id: "premium",
+    name: "Premium", 
+    price: "$7.99/mo", 
+    priceLocal: "KES 800/mo", 
+    priceAnnual: "$79.99/yr",
+    billing: "monthly",
+    contentAccess: ["music", "creators", "shorts", "movies", "series"],
+    royaltySplit: { creators: 70, platform: 30 }, // User-centric across all content
+    features: ["Everything: Music + Video + Movies", "Lossless & spatial audio", "4K HDR video", "Unlimited offline downloads", "3 devices", "Early access to releases", "See exactly where your money goes"], 
     highlight: true,
     cta: "Go Premium"
   },
   { 
+    id: "platinum",
     name: "Platinum", 
-    price: "$9.99/mo", 
-    priceLocal: "KES 1000/mo", 
+    price: "$12.99/mo", 
+    priceLocal: "KES 1300/mo", 
+    priceAnnual: "$129.99/yr",
     billing: "monthly",
-    features: ["Everything in Premium", "Lossless & spatial audio", "4K video streaming", "6 devices", "Exclusive Platinum content", "Virtual meet & greets", "Priority customer support", "$5 creator tip credits/month", "AfriStream Platinum badge"], 
+    contentAccess: ["music", "creators", "shorts", "movies", "series", "live", "exclusive"],
+    royaltySplit: { creators: 75, platform: 25 }, // Better split for premium supporters
+    features: ["Everything in Premium", "Exclusive Platinum content", "Live event access", "Virtual meet & greets", "$5 tip credits monthly", "6 devices", "Priority support", "Platinum badge on profile", "75% of your sub goes to creators"], 
     highlight: false,
     cta: "Go Platinum"
   },
   { 
+    id: "family",
     name: "Family", 
-    price: "$7.99/mo", 
-    priceLocal: "KES 800/mo", 
+    price: "$14.99/mo", 
+    priceLocal: "KES 1500/mo", 
+    priceAnnual: "$149.99/yr",
     billing: "monthly",
-    features: ["All Premium features", "Up to 6 family members", "Individual recommendations", "Parental controls", "Family Mix playlists", "Shared payment"], 
+    contentAccess: ["music", "creators", "shorts", "movies", "series"],
+    royaltySplit: { creators: 70, platform: 30 },
+    features: ["All Premium features", "Up to 6 family members", "Individual profiles & recommendations", "Parental controls", "Family Mix playlists", "Combined impact dashboard"], 
     highlight: false,
     cta: "Start Family"
   },
   { 
+    id: "creator_pro",
     name: "Creator Pro", 
-    price: "$14.99/mo", 
-    priceLocal: "KES 1500/mo", 
+    price: "$19.99/mo", 
+    priceLocal: "KES 2000/mo", 
+    priceAnnual: "$199.99/yr",
     billing: "monthly",
-    features: ["All Platinum features", "Priority distribution", "Advanced analytics dashboard", "Promotional tools", "Verified creator badge", "Direct fan messaging", "Revenue optimization AI", "Dedicated account manager"], 
+    contentAccess: ["music", "creators", "shorts", "movies", "series", "live", "exclusive", "studio"],
+    royaltySplit: { creators: 75, platform: 25 },
+    features: ["All Platinum features", "Full Studio access", "Priority distribution", "Advanced analytics", "Promotional tools", "Verified badge", "Direct fan messaging", "Revenue optimization AI"], 
     highlight: false,
     cta: "Go Creator Pro"
   },

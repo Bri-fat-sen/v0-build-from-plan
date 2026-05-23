@@ -47,6 +47,7 @@ const getSidebarLinks = (mode: ActiveMode, hasCapability: (cap: string) => boole
     { label: "Watchlist", href: "/library?tab=watchlist", icon: Bookmark },
     ...(hasCapability("offline_download") ? [{ label: "Downloads", href: "/library?tab=downloads", icon: Download }] : []),
     { label: "History", href: "/library?tab=history", icon: History },
+    { label: "Your Impact", href: "/impact", icon: Heart },
     { label: "Diaspora", href: "/diaspora", icon: MapPin },
     { label: "Rewind", href: "/rewind", icon: Sparkles },
     ...(hasCapability("tips_send") ? [{ label: "Send Tips", href: "/tips", icon: Gift }] : []),
