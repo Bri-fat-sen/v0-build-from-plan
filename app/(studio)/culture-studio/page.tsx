@@ -1,5 +1,5 @@
 "use client"
-import { mockCultureTopics, mockLanguages, formatNumber } from "@/lib/mock-data"
+import { cultureTopics, mockLanguages, formatNumber } from "@/lib/mock-data"
 import { StatCard, StudioSection } from "@/components/studio/stat-card"
 import { Globe, BookOpen, Users, Upload, Archive, Languages, Star } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
@@ -48,7 +48,7 @@ export default function CultureStudioPage() {
       {/* Categories */}
       <StudioSection title="Content Categories">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {mockCultureTopics.map(topic => (
+          {cultureTopics.map(topic => (
             <div key={topic.id} className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 transition-colors hover:bg-muted/50">
               <div className="flex items-center gap-3">
                 <div className="flex size-9 items-center justify-center rounded-lg bg-primary/15">

@@ -1,4 +1,119 @@
 // AfriStream Mock Data
+
+// User Types based on AfriStream Blueprint
+export type UserType = 
+  | "listener" 
+  | "artist" 
+  | "label" 
+  | "filmmaker" 
+  | "creator" 
+  | "cultural_educator" 
+  | "comedian" 
+  | "event_organizer" 
+  | "brand";
+
+export interface UserTypeInfo {
+  id: UserType;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  features: string[];
+  studioAccess: boolean;
+  studioPath?: string;
+}
+
+export const userTypes: UserTypeInfo[] = [
+  { 
+    id: "listener", 
+    name: "Listener / Fan", 
+    description: "Discover and enjoy African music, movies, and culture",
+    icon: "headphones",
+    color: "primary",
+    features: ["Personalized recommendations", "Playlists & watchlists", "Offline downloads", "Support your favorite artists"],
+    studioAccess: false
+  },
+  { 
+    id: "artist", 
+    name: "Music Artist", 
+    description: "Release music, grow your fanbase, and earn royalties",
+    icon: "mic",
+    color: "primary",
+    features: ["Upload unlimited music", "Real-time analytics", "Fan insights", "Direct royalty payouts", "Promotional tools"],
+    studioAccess: true,
+    studioPath: "/artist"
+  },
+  { 
+    id: "label", 
+    name: "Record Label", 
+    description: "Manage artists, releases, and catalogue royalties",
+    icon: "disc",
+    color: "primary",
+    features: ["Multi-artist management", "Catalogue administration", "Split management", "Campaign tools", "Revenue reports"],
+    studioAccess: true,
+    studioPath: "/label"
+  },
+  { 
+    id: "filmmaker", 
+    name: "Filmmaker / Director", 
+    description: "Distribute films, manage premieres, and reach audiences",
+    icon: "clapperboard",
+    color: "primary",
+    features: ["Film distribution", "Premiere scheduling", "Rental & purchase options", "Audience analytics", "Licensing tools"],
+    studioAccess: true,
+    studioPath: "/film"
+  },
+  { 
+    id: "creator", 
+    name: "Content Creator", 
+    description: "Build your channel with videos, podcasts, and shorts",
+    icon: "video",
+    color: "primary",
+    features: ["Channel customization", "Video & podcast uploads", "Shorts creation", "Monetization", "Community features"],
+    studioAccess: true,
+    studioPath: "/creator"
+  },
+  { 
+    id: "cultural_educator", 
+    name: "Cultural Educator", 
+    description: "Preserve and share African heritage, language, and traditions",
+    icon: "book-open",
+    color: "primary",
+    features: ["Heritage archiving", "Language courses", "Cultural documentation", "Community building", "Educational content"],
+    studioAccess: true,
+    studioPath: "/culture-studio"
+  },
+  { 
+    id: "comedian", 
+    name: "Comedian / Skit Creator", 
+    description: "Share comedy, skits, and entertainment content",
+    icon: "laugh",
+    color: "primary",
+    features: ["Skit uploads", "Comedy series", "Fan engagement", "Live show promotion", "Tip earnings"],
+    studioAccess: true,
+    studioPath: "/creator"
+  },
+  { 
+    id: "event_organizer", 
+    name: "Event Organizer", 
+    description: "Promote concerts, festivals, and cultural events",
+    icon: "calendar",
+    color: "primary",
+    features: ["Event creation", "Ticket sales", "Livestream setup", "Audience reach", "Revenue tracking"],
+    studioAccess: true,
+    studioPath: "/events"
+  },
+  { 
+    id: "brand", 
+    name: "Brand / Sponsor", 
+    description: "Reach African audiences through sponsorships and campaigns",
+    icon: "megaphone",
+    color: "primary",
+    features: ["Sponsorship opportunities", "Campaign analytics", "Audience targeting", "Creator partnerships", "Hub sponsorship"],
+    studioAccess: false
+  },
+];
+
 export interface Track {
   id: string; title: string; artist: string; artistId: string; album: string; albumId: string;
   duration: string; coverArt: string; genre: string; plays: number; country: string;
