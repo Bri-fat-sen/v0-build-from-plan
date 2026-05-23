@@ -1,140 +1,114 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { AfriStreamLoader } from "./afristream-loader"
 
 interface TransitionContextType {
   isTransitioning: boolean
-  startTransition: () => void
-  endTransition: () => void
 }
 
-const TransitionContext = createContext<TransitionContextType>({
-  isTransitioning: false,
-  startTransition: () => {},
-  endTransition: () => {},
-})
+const TransitionContext = createContext<TransitionContextType>({ isTransitioning: false })
 
 export function usePageTransition() {
   return useContext(TransitionContext)
 }
 
-interface PageTransitionProviderProps {
-  children: ReactNode
-  showLoader?: boolean
-  loaderDuration?: number
+// Route-to-message map so the loader always says something relevant
+const ROUTE_MESSAGES: Record<string, string> = {
+  "/":              "Loading your world",
+  "/music":         "Tuning in",
+  "/movies":        "Setting the scene",
+  "/live":          "Going live",
+  "/creators":      "Meeting the creators",
+  "/search":        "Ready to discover",
+  "/library":       "Opening your library",
+  "/subscriptions": "Checking your plan",
+  "/notifications": "Checking activity",
+  "/shorts":        "Loading shorts",
+  "/podcasts":      "Cuing up episodes",
+  "/impact":        "Loading your impact",
+  "/new-releases":  "Fresh drops incoming",
+  "/diaspora":      "Connecting the diaspora",
 }
 
-export function PageTransitionProvider({ 
-  children, 
-  showLoader = true,
-  loaderDuration = 800 
-}: PageTransitionProviderProps) {
+function getMessageForPath(path: string): string {
+  if (ROUTE_MESSAGES[path]) return ROUTE_MESSAGES[path]
+  if (path.startsWith("/music/charts")) return "Loading the charts"
+  if (path.startsWith("/music/artist")) return "Loading artist"
+  if (path.startsWith("/music"))        return "Tuning in"
+  if (path.startsWith("/movies"))       return "Setting the scene"
+  if (path.startsWith("/studio"))       return "Opening studio"
+  if (path.startsWith("/admin"))        return "Entering control centre"
+  return "Loading"
+}
+
+export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [isInitialLoad, setIsInitialLoad] = useState(true)
-  const [displayChildren, setDisplayChildren] = useState(children)
+  const [showSplash, setShowSplash]         = useState(true)   // initial full-screen load
+  const [isTransitioning, setTransitioning] = useState(false)  // between-page flash
+  const [navMessage, setNavMessage]         = useState("")
+  const prevPath = useRef(pathname)
+  const splashTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const navTimer    = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const startTransition = useCallback(() => {
-    setIsTransitioning(true)
+  // Show splash once on first mount, dismiss after 1.8 s
+  useEffect(() => {
+    splashTimer.current = setTimeout(() => setShowSplash(false), 1800)
+    return () => { if (splashTimer.current) clearTimeout(splashTimer.current) }
   }, [])
 
-  const endTransition = useCallback(() => {
-    setIsTransitioning(false)
-  }, [])
-
-  // Initial app load
+  // Show brief page loader on every route change
   useEffect(() => {
-    if (isInitialLoad) {
-      const timer = setTimeout(() => {
-        setIsInitialLoad(false)
-      }, loaderDuration)
-      return () => clearTimeout(timer)
-    }
-  }, [isInitialLoad, loaderDuration])
+    if (showSplash) return               // don't double-show during splash
+    if (prevPath.current === pathname) return
+    prevPath.current = pathname
 
-  // Handle route changes
-  useEffect(() => {
-    if (!isInitialLoad) {
-      setIsTransitioning(true)
-      const timer = setTimeout(() => {
-        setDisplayChildren(children)
-        setIsTransitioning(false)
-      }, 200)
-      return () => clearTimeout(timer)
-    } else {
-      setDisplayChildren(children)
-    }
-  }, [pathname, children, isInitialLoad])
+    setNavMessage(getMessageForPath(pathname))
+    setTransitioning(true)
+
+    navTimer.current = setTimeout(() => setTransitioning(false), 600)
+    return () => { if (navTimer.current) clearTimeout(navTimer.current) }
+  }, [pathname, showSplash])
 
   return (
-    <TransitionContext.Provider value={{ isTransitioning, startTransition, endTransition }}>
-      {/* Initial full-screen loader */}
-      {showLoader && isInitialLoad && (
-        <AfriStreamLoader 
-          isLoading={true} 
-          variant="fullscreen"
-          message="Loading your experience"
-        />
+    <TransitionContext.Provider value={{ isTransitioning }}>
+      {/* ── Initial splash ── */}
+      {showSplash && <AfriStreamLoader message="Loading your world" />}
+
+      {/* ── Between-page loader ── */}
+      {!showSplash && isTransitioning && (
+        <AfriStreamLoader message={navMessage} />
       )}
-      
-      {/* Page content with transition */}
-      <div 
-        className={
-          isInitialLoad 
-            ? "opacity-0" 
-            : isTransitioning 
-              ? "page-exit" 
-              : "page-enter"
-        }
-      >
-        {displayChildren}
+
+      {/* ── Page content ── */}
+      <div className={showSplash || isTransitioning ? "invisible" : "page-enter"}>
+        {children}
       </div>
     </TransitionContext.Provider>
   )
 }
 
-// Animated wrapper for page sections
-interface AnimatedSectionProps {
+// ─── Utility wrappers ────────────────────────────────────────────────────────
+export function AnimatedSection({
+  children,
+  className = "",
+  delay = 0,
+  animation = "slide",
+}: {
   children: ReactNode
   className?: string
   delay?: number
   animation?: "fade" | "slide" | "scale"
-}
-
-export function AnimatedSection({ 
-  children, 
-  className = "",
-  delay = 0,
-  animation = "slide"
-}: AnimatedSectionProps) {
-  const animationClass = {
-    fade: "animate-fade-in",
-    slide: "animate-slide-up",
-    scale: "animate-scale-in",
-  }[animation]
-
+}) {
+  const cls = { fade: "animate-fade-in", slide: "animate-slide-up", scale: "animate-scale-in" }[animation]
   return (
-    <div 
-      className={`${animationClass} ${className}`}
-      style={{ animationDelay: `${delay}ms` }}
-    >
+    <div className={`${cls} ${className}`} style={{ animationDelay: `${delay}ms` }}>
       {children}
     </div>
   )
 }
 
-// Staggered list animation wrapper
-interface StaggeredListProps {
-  children: ReactNode
-  className?: string
-}
-
-export function StaggeredList({ children, className = "" }: StaggeredListProps) {
-  return (
-    <div className={`stagger-children ${className}`}>
-      {children}
-    </div>
-  )
+export function StaggeredList({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <div className={`stagger-children ${className}`}>{children}</div>
 }
