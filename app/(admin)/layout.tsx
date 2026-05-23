@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, Users, FileVideo, DollarSign, Shield, Send,
-  FileText, ScrollText, Settings, ArrowLeft, Menu, X, Headphones,
+  FileText, ScrollText, Settings, ArrowLeft, Menu, X,
 } from "lucide-react"
 import { useState } from "react"
 
@@ -34,7 +34,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <ArrowLeft className="size-4" />
         </Link>
         <div className="flex items-center gap-2">
-          <Headphones className="size-5 text-primary" />
           <span className="font-display text-sm font-bold text-foreground">
             AfriStream <span className="text-primary">Admin</span>
           </span>
