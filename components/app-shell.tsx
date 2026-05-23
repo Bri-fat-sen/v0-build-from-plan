@@ -14,6 +14,7 @@ import { MiniPlayer } from "@/components/player/mini-player"
 import { FullScreenPlayer } from "@/components/player/full-screen-player"
 import { usePlayer } from "@/lib/player-context"
 import { useUser, ActiveMode, modeInfo, tierInfo } from "@/lib/user-context"
+import { NotificationsPanel, NotificationBell } from "@/components/notifications-panel"
 
 // Platform Worlds - Main navigation
 const worldTabs = [
@@ -313,6 +314,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, activeMode, setActiveMode, getAvailableModes, hasCapability } = useUser()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [modeSwitcherOpen, setModeSwitcherOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set())
 
   const navCategories = getNavCategories(activeMode, hasCapability)
@@ -485,9 +487,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Link href="/search" className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden">
             <Search className="size-5" />
           </Link>
-          <button className="relative flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-            <Bell className="size-5" />
-            <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-primary" />
+          <button 
+            onClick={() => setNotificationsOpen(true)}
+            className="relative flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <NotificationBell />
           </button>
           <Link href="/profile" className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-muted ring-2 ring-transparent transition-all hover:ring-primary/50">
             {user?.avatar ? (
@@ -731,6 +735,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Audio Player */}
       {currentTrack && !isFullScreen && <MiniPlayer />}
       {isFullScreen && <FullScreenPlayer />}
+
+      {/* Notifications Panel */}
+      <NotificationsPanel isOpen={notificationsOpen} onClose={() => setNotificationsOpen(false)} />
     </div>
   )
 }
