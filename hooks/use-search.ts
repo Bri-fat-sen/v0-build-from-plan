@@ -4,19 +4,21 @@ import { useState, useEffect, useMemo, useCallback } from "react"
 import Fuse from "fuse.js"
 import { storage, STORAGE_KEYS } from "@/lib/storage"
 import {
-  tracks,
-  albums,
-  artists,
-  movies,
-  creators,
-  podcasts,
+  mockTracks as tracks,
+  mockAlbums as albums,
+  mockArtists as artists,
+  mockMovies as movies,
+  mockCreators as creators,
+  mockPlaylists as podcasts,
   type Track,
   type Album,
   type Artist,
   type Movie,
   type Creator,
-  type Podcast,
 } from "@/lib/mock-data"
+
+// Podcast type alias (using playlist structure for now)
+type Podcast = { id: string; title: string; artist: string; cover: string }
 
 // ─── Search Result Types ──────────────────────────────────────────────────────
 
@@ -275,7 +277,7 @@ export function useSearch() {
   }
 }
 
-// ─── Trending Searches ────────────────────────────────────────────────────────
+// ─── Trending Searches ────��───────────────────────────────────────────────────
 
 export const trendingSearches = [
   "Burna Boy",
