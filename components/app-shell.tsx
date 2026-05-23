@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   Search, Bell, User, Home, Library, Music, Film, Users, Globe, Radio, Menu,
-  X, ChevronDown, Settings, History, Download, Bookmark, Heart,
+  X, ChevronDown, Settings, History, Download, Bookmark, Heart, ShoppingBag,
 } from "lucide-react"
 import { MiniPlayer } from "@/components/player/mini-player"
 import { FullScreenPlayer } from "@/components/player/full-screen-player"
@@ -97,6 +97,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
         ))}
         <div className="ml-auto flex items-center gap-2">
+          <Link href="/merch" className={cn(
+            "hidden whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors lg:flex items-center gap-1.5",
+            pathname.startsWith("/merch") ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+          )}>
+            <ShoppingBag className="size-4" />
+            Merch
+          </Link>
           <Link href="/hubs" className={cn(
             "hidden whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors lg:block",
             pathname.startsWith("/hubs") ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"

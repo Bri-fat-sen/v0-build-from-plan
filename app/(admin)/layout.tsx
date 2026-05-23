@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard, Users, FileVideo, DollarSign, Shield, Send,
-  FileText, ScrollText, Settings, ArrowLeft, Menu, X,
+  FileText, ScrollText, Settings, ArrowLeft, Menu, X, ShieldAlert,
 } from "lucide-react"
 import { useState } from "react"
 
@@ -14,6 +14,7 @@ const adminLinks = [
   { label: "Content", href: "/admin/content", icon: FileVideo },
   { label: "Finance & Royalties", href: "/admin/finance", icon: DollarSign },
   { label: "Copyright", href: "/admin/copyright", icon: Shield },
+  { label: "Moderation", href: "/admin/moderation", icon: ShieldAlert },
   { label: "Distribution", href: "/admin/distribution", icon: Send },
   { label: "Licensing", href: "/admin/licensing", icon: FileText },
   { label: "Audit Logs", href: "/admin/audit", icon: ScrollText },
