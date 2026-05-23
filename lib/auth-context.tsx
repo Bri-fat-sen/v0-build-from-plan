@@ -26,6 +26,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Skip initialization during build
+  if (typeof window === "undefined") {
+    return <>{children}</>
+  }
+
   const [authUser, setAuthUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [artist, setArtist] = useState<Artist | null>(null)

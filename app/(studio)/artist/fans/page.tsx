@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { formatNumber, countryHubs } from "@/lib/mock-data"
+import { formatNumber } from "@/lib/mock-data"
 import { StatCard } from "@/components/studio/stat-card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -258,7 +258,7 @@ export default function FanInsightsPage() {
             {topCountries.map((c, i) => (
               <div key={c.country} className="flex items-center gap-3">
                 <span className="w-4 text-xs text-muted-foreground">{i + 1}</span>
-                <span className="text-lg">{countryHubs.find(h => h.code === c.flag)?.flag || "🌍"}</span>
+                <span className="text-lg">🌍</span>
                 <span className="flex-1 text-sm font-medium text-foreground">{c.country}</span>
                 <span className="font-mono text-xs text-muted-foreground">{formatNumber(c.listeners)}</span>
                 <div className="w-20">

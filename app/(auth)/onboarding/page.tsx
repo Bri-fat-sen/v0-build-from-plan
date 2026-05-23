@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useUser, modeInfo, tierInfo, ActiveMode } from "@/lib/user-context"
-import { countryHubs, africanLanguages } from "@/lib/mock-data"
+import { formatNumber } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { 
   Headphones, Mic, Clapperboard, Video, BookOpen, 

@@ -2,53 +2,38 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Eye, EyeOff, Loader2, Music, ArrowLeft, Check } from "lucide-react"
+import { Eye, EyeOff, Loader2, Music, ArrowLeft } from "lucide-react"
 
-const benefits = [
-  "Stream millions of African songs",
-  "Watch Nollywood & African cinema",
-  "Discover podcasts & creators",
-  "Offline listening & downloads",
-]
-
-export default function SignUpPage() {
+export function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get("redirect") ?? "/"
   
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [displayName, setDisplayName] = useState("")
-  const [username, setUsername] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters")
+    const supabase = createClient()
+    if (!supabase) {
+      setError("Supabase not configured. Please check environment variables.")
       setLoading(false)
       return
     }
 
-    const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      options: {
-        emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ?? 
-          `${window.location.origin}/auth/callback`,
-        data: {
-          display_name: displayName,
-          username: username || undefined,
-        },
-      },
     })
 
     if (error) {
@@ -57,7 +42,8 @@ export default function SignUpPage() {
       return
     }
 
-    router.push("/auth/sign-up-success")
+    router.push(redirect)
+    router.refresh()
   }
 
   return (
@@ -74,27 +60,16 @@ export default function SignUpPage() {
             <Music className="size-8 text-primary" />
           </div>
           <h1 className="font-display text-5xl font-black tracking-tight text-white">
-            Join the African<br />
-            <span className="text-primary">streaming revolution</span>
+            Welcome back to<br />
+            <span className="text-primary">AfriStream</span>
           </h1>
           <p className="mt-4 max-w-md text-lg text-white/60">
-            Create your free account and start streaming the best of African music, movies, and culture.
+            The sound of Africa awaits. Sign in to continue your journey through music, movies, and culture.
           </p>
-          
-          <ul className="mt-8 space-y-3">
-            {benefits.map((benefit) => (
-              <li key={benefit} className="flex items-center gap-3">
-                <div className="flex size-6 items-center justify-center rounded-full bg-primary/20">
-                  <Check className="size-3.5 text-primary" />
-                </div>
-                <span className="text-white/70">{benefit}</span>
-              </li>
-            ))}
-          </ul>
         </div>
 
         <p className="text-sm text-white/40">
-          Join 2M+ users streaming across 54 African countries
+          50M+ monthly streams across 54 African countries
         </p>
       </div>
 
@@ -113,55 +88,22 @@ export default function SignUpPage() {
               <span className="font-display text-4xl font-black tracking-tighter text-white">Afri</span>
               <span className="font-display text-4xl font-black tracking-tighter text-primary">Stream</span>
             </div>
-            <p className="mt-2 text-sm text-white/50">Create your account</p>
+            <p className="mt-2 text-sm text-white/50">Welcome back</p>
           </div>
 
           {/* Desktop title */}
           <div className="hidden lg:block mb-8">
-            <h2 className="text-2xl font-bold text-white">Create your account</h2>
-            <p className="mt-1 text-sm text-white/50">Start streaming for free today</p>
+            <h2 className="text-2xl font-bold text-white">Sign in to your account</h2>
+            <p className="mt-1 text-sm text-white/50">Enter your credentials to continue</p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSignUp} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-5">
             {error && (
               <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
                 {error}
               </div>
             )}
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <label htmlFor="displayName" className="text-sm font-medium text-white">
-                  Display Name
-                </label>
-                <Input
-                  id="displayName"
-                  type="text"
-                  placeholder="Your name"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  required
-                  disabled={loading}
-                  className="h-12 border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-primary"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label htmlFor="username" className="text-sm font-medium text-white">
-                  Username
-                </label>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="@username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                  disabled={loading}
-                  className="h-12 border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-primary"
-                />
-              </div>
-            </div>
 
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-white">
@@ -175,25 +117,29 @@ export default function SignUpPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                className="h-12 border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-primary"
+                className="h-12 border-white/10 bg-white/5 text-white placeholder:text-white/30 focus:border-primary focus:ring-primary/20"
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-white">
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="text-sm font-medium text-white">
+                  Password
+                </label>
+                <Link href="/auth/reset-password" className="text-xs text-primary hover:underline">
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="At least 6 characters"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
                   disabled={loading}
-                  className="h-12 border-white/10 bg-white/5 pr-10 text-white placeholder:text-white/30 focus:border-primary"
+                  className="h-12 border-white/10 bg-white/5 pr-10 text-white placeholder:text-white/30 focus:border-primary focus:ring-primary/20"
                 />
                 <button
                   type="button"
@@ -213,21 +159,21 @@ export default function SignUpPage() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />
-                  Creating account...
+                  Signing in...
                 </>
               ) : (
-                "Create Account"
+                "Sign In"
               )}
             </Button>
           </form>
 
           {/* Divider */}
-          <div className="relative my-6">
+          <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-[#080808] px-4 text-xs text-white/40">or sign up with</span>
+              <span className="bg-[#080808] px-4 text-xs text-white/40">or continue with</span>
             </div>
           </div>
 
@@ -251,19 +197,11 @@ export default function SignUpPage() {
             </button>
           </div>
 
-          {/* Terms */}
-          <p className="mt-6 text-center text-xs text-white/40">
-            By signing up, you agree to AfriStream&apos;s{" "}
-            <Link href="/terms" className="underline hover:text-white">Terms of Service</Link>
-            {" "}and{" "}
-            <Link href="/privacy" className="underline hover:text-white">Privacy Policy</Link>
-          </p>
-
-          {/* Sign in link */}
-          <p className="mt-6 text-center text-sm text-white/50">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="font-medium text-primary hover:underline">
-              Sign in
+          {/* Sign up link */}
+          <p className="mt-8 text-center text-sm text-white/50">
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/sign-up" className="font-medium text-primary hover:underline">
+              Sign up for free
             </Link>
           </p>
         </div>
