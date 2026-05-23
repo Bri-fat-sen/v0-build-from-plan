@@ -187,55 +187,39 @@
 .animate-spin-slow { animation: spin-slow 3s linear infinite; }
 
 /* ── AfriStream Loader Animations ────────────────────────── */
-@keyframes loader-text-reveal {
-  0%   { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(8px); }
-  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+@keyframes loader-afri-in {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-@keyframes loader-glow-pulse {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50%       { opacity: 0.8; transform: scale(1.15); }
+@keyframes loader-stream-in {
+  0%   { opacity: 0; transform: translateY(24px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-@keyframes loader-ring-spin {
-  to { transform: rotate(360deg); }
+@keyframes loader-line-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
-@keyframes loader-flare {
-  0%, 100% { opacity: 0; transform: translateX(-50%) scale(0.5); }
-  50%       { opacity: 1; transform: translateX(0%) scale(1); }
-}
-@keyframes loader-shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-@keyframes loader-fade-in {
+@keyframes loader-msg-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
 .loader-afri {
-  animation: loader-text-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  opacity: 0;
+  animation: loader-afri-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
 }
 .loader-stream {
-  animation: loader-text-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  opacity: 0;
+  animation: loader-stream-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards;
 }
-.loader-glow {
-  animation: loader-glow-pulse 2.5s ease-in-out infinite;
-}
-.loader-ring-outer {
-  animation: loader-ring-spin 8s linear infinite;
-}
-.loader-ring-inner {
-  animation: loader-ring-spin 5s linear infinite reverse;
-}
-.loader-flare {
-  animation: loader-flare 3s ease-in-out infinite;
-}
-.loader-shimmer {
-  background: linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.3) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: loader-shimmer 2s ease-in-out infinite;
+.loader-line {
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: loader-line-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
 }
 .loader-message {
-  animation: loader-fade-in 0.6s ease-out 0.6s both;
+  opacity: 0;
+  animation: loader-msg-in 0.4s ease-out 1.3s forwards;
 }
 
 /* eq-bar (mini player, etc.) */
