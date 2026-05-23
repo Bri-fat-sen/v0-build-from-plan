@@ -178,3 +178,10 @@
 /* ── Motion helpers ──────────────────────────────────────── */
 .hover-lift   { @apply transition-transform duration-200 ease-out hover:-translate-y-0.5; }
 .press-scale  { @apply active:scale-[0.98] transition-transform duration-150; }
+
+/* ── Spin slow (for shorts sound disc) ──────────────────── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
