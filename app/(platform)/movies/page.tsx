@@ -71,7 +71,7 @@ export default function MoviesPage() {
       </section>
 
       {/* Categories */}
-      <section className="px-4 lg:px-6 mt-8">
+      <section className="px-4 lg:px-6 mt-12">
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
           {movieCategories.map((cat, i) => (
             <button

@@ -74,7 +74,7 @@ export default function MusicPage() {
       </section>
 
       {/* Featured Artist Spotlight */}
-      <section className="px-4 lg:px-6 -mt-4">
+      <section className="px-4 lg:px-6 mt-12">
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
           <div className="flex flex-col md:flex-row">
             {/* Artist Image */}

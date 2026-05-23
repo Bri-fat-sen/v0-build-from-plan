@@ -66,7 +66,7 @@ export default function LivePage() {
 
       {/* Live Now */}
       {liveNow.length > 0 && (
-        <section className="px-4 lg:px-6 -mt-4">
+        <section className="px-4 lg:px-6 mt-12">
           <div className="flex items-center gap-2 mb-4">
             <Zap className="size-5 text-red-500" />
             <h2 className="font-display text-xl font-bold text-foreground">Happening Now</h2>
