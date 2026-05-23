@@ -6,14 +6,13 @@ import { cn } from "@/lib/utils"
 import {
   Search, Bell, User, Home, Library, Music, Film, Users, Globe, Radio, Menu,
   X, ChevronDown, Settings, History, Download, Bookmark, Heart, ShoppingBag, Gift, Sparkles, MapPin,
-  Upload, BarChart3, DollarSign, Mic, Video, Calendar, BookOpen, Clapperboard, Tag, Megaphone,
-  TrendingUp, MessageSquare, Crown, Zap,
+  Upload, BarChart3, DollarSign, Mic, Video, Calendar, BookOpen, Clapperboard, Tag,
+  TrendingUp, Crown, Zap, Shield, ChevronRight, Check,
 } from "lucide-react"
 import { MiniPlayer } from "@/components/player/mini-player"
 import { FullScreenPlayer } from "@/components/player/full-screen-player"
 import { usePlayer } from "@/lib/player-context"
-import { useUser } from "@/lib/user-context"
-import type { UserType } from "@/lib/mock-data"
+import { useUser, ActiveMode, modeInfo, tierInfo } from "@/lib/user-context"
 
 const worldTabs = [
   { label: "One", href: "/", icon: Home },
@@ -24,283 +23,273 @@ const worldTabs = [
   { label: "Live", href: "/live", icon: Radio },
 ]
 
-// User-type specific sidebar links
-const getSidebarLinks = (userType: UserType) => {
+const modeIcons: Record<ActiveMode, typeof Mic> = {
+  listener: Music,
+  artist: Mic,
+  creator: Video,
+  filmmaker: Clapperboard,
+  educator: BookOpen,
+  organizer: Calendar,
+  admin: Shield,
+}
+
+// Mode-specific sidebar links
+const getSidebarLinks = (mode: ActiveMode, hasCapability: (cap: string) => boolean) => {
   const commonLinks = [
     { label: "Home", href: "/", icon: Home },
     { label: "Search", href: "/search", icon: Search },
     { label: "Library", href: "/library", icon: Library },
   ]
 
-  const listenerLinks = [
-    ...commonLinks,
+  const listenerExtras = [
     { label: "For You", href: "/for-you", icon: Sparkles },
     { label: "Playlists", href: "/library?tab=playlists", icon: Heart },
     { label: "Watchlist", href: "/library?tab=watchlist", icon: Bookmark },
-    { label: "Downloads", href: "/library?tab=downloads", icon: Download },
+    ...(hasCapability("offline_download") ? [{ label: "Downloads", href: "/library?tab=downloads", icon: Download }] : []),
     { label: "History", href: "/library?tab=history", icon: History },
     { label: "Diaspora", href: "/diaspora", icon: MapPin },
     { label: "Rewind", href: "/rewind", icon: Sparkles },
-    { label: "Tips & Gifts", href: "/tips", icon: Gift },
+    ...(hasCapability("tips_send") ? [{ label: "Send Tips", href: "/tips", icon: Gift }] : []),
   ]
 
-  const artistLinks = [
-    ...commonLinks,
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "My Studio" },
-    { label: "Artist Studio", href: "/artist", icon: Mic },
-    { label: "Upload Music", href: "/artist?tab=upload", icon: Upload },
-    { label: "Analytics", href: "/artist?tab=analytics", icon: BarChart3 },
-    { label: "Fan Insights", href: "/artist/fans", icon: Users },
-    { label: "Royalties", href: "/royalties", icon: DollarSign },
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
-    { label: "For You", href: "/for-you", icon: Sparkles },
-    { label: "Charts", href: "/music/charts", icon: TrendingUp },
-    { label: "Rewind", href: "/rewind", icon: Sparkles },
-  ]
-
-  const labelLinks = [
-    ...commonLinks,
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Label Management" },
-    { label: "Label Studio", href: "/label", icon: Tag },
-    { label: "Artist Roster", href: "/label?tab=artists", icon: Users },
-    { label: "Releases", href: "/label?tab=releases", icon: Music },
-    { label: "Royalties", href: "/royalties", icon: DollarSign },
-    { label: "Distribution", href: "/distribution", icon: Globe },
-    { label: "Licensing", href: "/licensing", icon: BookOpen },
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
-    { label: "Charts", href: "/music/charts", icon: TrendingUp },
-  ]
-
-  const creatorLinks = [
-    ...commonLinks,
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "My Channel" },
-    { label: "Creator Studio", href: "/creator", icon: Video },
-    { label: "Upload Content", href: "/creator?tab=upload", icon: Upload },
-    { label: "Monetization", href: "/creator/monetization", icon: DollarSign },
-    { label: "Analytics", href: "/creator?tab=analytics", icon: BarChart3 },
-    { label: "Community", href: "/creator?tab=community", icon: MessageSquare },
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
-    { label: "Trending", href: "/creators", icon: TrendingUp },
-    { label: "Tips Received", href: "/tips", icon: Gift },
-  ]
-
-  const filmmakerLinks = [
-    ...commonLinks,
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Film Studio" },
-    { label: "Film Studio", href: "/film", icon: Clapperboard },
-    { label: "Upload Film", href: "/film?tab=upload", icon: Upload },
-    { label: "Premieres", href: "/film/premieres", icon: Calendar },
-    { label: "Revenue", href: "/film?tab=revenue", icon: DollarSign },
-    { label: "Licensing", href: "/licensing", icon: BookOpen },
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
-    { label: "Trending Films", href: "/movies", icon: TrendingUp },
-  ]
-
-  const culturalEducatorLinks = [
-    ...commonLinks,
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Culture Studio" },
-    { label: "Culture Studio", href: "/culture-studio", icon: Globe },
-    { label: "Heritage Tools", href: "/culture-studio/heritage", icon: BookOpen },
-    { label: "Languages", href: "/culture/languages", icon: MessageSquare },
-    { label: "Upload Content", href: "/culture-studio?tab=upload", icon: Upload },
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
-    { label: "Culture Hub", href: "/culture", icon: Globe },
-  ]
-
-  const eventOrganizerLinks = [
-    ...commonLinks,
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Event Studio" },
-    { label: "Event Studio", href: "/events", icon: Calendar },
-    { label: "Create Event", href: "/events?tab=create", icon: Upload },
-    { label: "Ticket Sales", href: "/events?tab=tickets", icon: DollarSign },
-    { label: "Livestream", href: "/events?tab=live", icon: Radio },
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
-    { label: "Live Events", href: "/live", icon: Radio },
-  ]
-
-  const brandLinks = [
-    ...commonLinks,
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Brand Portal" },
-    { label: "Campaigns", href: "/brand/campaigns", icon: Megaphone },
-    { label: "Sponsorships", href: "/brand/sponsorships", icon: Crown },
-    { label: "Analytics", href: "/brand/analytics", icon: BarChart3 },
-    { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
-    { label: "Top Artists", href: "/music/charts", icon: TrendingUp },
-    { label: "Top Creators", href: "/creators", icon: Users },
-  ]
-
-  const linkMap: Record<UserType, typeof listenerLinks> = {
-    listener: listenerLinks,
-    artist: artistLinks,
-    label: labelLinks,
-    creator: creatorLinks,
-    comedian: creatorLinks,
-    filmmaker: filmmakerLinks,
-    cultural_educator: culturalEducatorLinks,
-    event_organizer: eventOrganizerLinks,
-    brand: brandLinks,
+  switch (mode) {
+    case "artist":
+      return [
+        ...commonLinks,
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Artist Studio" },
+        { label: "Dashboard", href: "/artist", icon: BarChart3 },
+        { label: "Upload Music", href: "/artist?tab=upload", icon: Upload },
+        { label: "My Releases", href: "/artist?tab=releases", icon: Music },
+        { label: "Fan Insights", href: "/artist/fans", icon: Users },
+        { label: "Royalties", href: "/royalties", icon: DollarSign },
+        ...(hasCapability("distribution") ? [{ label: "Distribution", href: "/distribution", icon: Globe }] : []),
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
+        { label: "Charts", href: "/music/charts", icon: TrendingUp },
+        { label: "Rewind", href: "/rewind", icon: Sparkles },
+      ]
+    case "creator":
+      return [
+        ...commonLinks,
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Creator Studio" },
+        { label: "Dashboard", href: "/creator", icon: BarChart3 },
+        { label: "Upload Video", href: "/creator?tab=upload", icon: Upload },
+        { label: "My Content", href: "/creator?tab=content", icon: Video },
+        { label: "Go Live", href: "/creator/live", icon: Radio },
+        { label: "Monetization", href: "/creator/monetization", icon: DollarSign },
+        { label: "Community", href: "/creator?tab=community", icon: Users },
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
+        { label: "Trending", href: "/creators", icon: TrendingUp },
+      ]
+    case "filmmaker":
+      return [
+        ...commonLinks,
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Film Studio" },
+        { label: "Dashboard", href: "/film", icon: BarChart3 },
+        { label: "Upload Film", href: "/film?tab=upload", icon: Upload },
+        { label: "My Films", href: "/film?tab=films", icon: Clapperboard },
+        { label: "Premieres", href: "/film/premieres", icon: Calendar },
+        { label: "Revenue", href: "/film?tab=revenue", icon: DollarSign },
+        ...(hasCapability("licensing") ? [{ label: "Licensing", href: "/licensing", icon: Tag }] : []),
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
+        { label: "African Cinema", href: "/movies", icon: Film },
+      ]
+    case "educator":
+      return [
+        ...commonLinks,
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Culture Studio" },
+        { label: "Dashboard", href: "/culture-studio", icon: BarChart3 },
+        { label: "Heritage Tools", href: "/culture-studio/heritage", icon: BookOpen },
+        { label: "Languages", href: "/culture-studio?tab=languages", icon: Globe },
+        { label: "Upload", href: "/culture-studio?tab=upload", icon: Upload },
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
+        { label: "Culture Hub", href: "/culture", icon: Globe },
+      ]
+    case "organizer":
+      return [
+        ...commonLinks,
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Event Studio" },
+        { label: "Dashboard", href: "/events", icon: BarChart3 },
+        { label: "Create Event", href: "/events?tab=create", icon: Calendar },
+        { label: "My Events", href: "/events?tab=events", icon: Calendar },
+        { label: "Ticket Sales", href: "/events?tab=tickets", icon: DollarSign },
+        { label: "Go Live", href: "/events/live", icon: Radio },
+        { label: "divider", href: "", icon: Home, isDivider: true, dividerLabel: "Discover" },
+        { label: "Live Events", href: "/live", icon: Radio },
+      ]
+    case "admin":
+      return [
+        { label: "Dashboard", href: "/admin", icon: Shield },
+        { label: "Users", href: "/admin/users", icon: Users },
+        { label: "Content", href: "/admin/content", icon: Film },
+        { label: "Finance", href: "/admin/finance", icon: DollarSign },
+        { label: "Moderation", href: "/admin/moderation", icon: Shield },
+        { label: "Audit Logs", href: "/admin/audit", icon: History },
+        { label: "Settings", href: "/admin/settings", icon: Settings },
+      ]
+    default:
+      return [...commonLinks, ...listenerExtras]
   }
-
-  return linkMap[userType] || listenerLinks
 }
 
-// User-type specific quick actions
-const getQuickActions = (userType: UserType) => {
-  const actions: Record<UserType, { label: string; href: string; icon: typeof Upload; color: string }[]> = {
-    listener: [],
-    artist: [
-      { label: "Upload", href: "/artist?tab=upload", icon: Upload, color: "bg-primary" },
-      { label: "Go Live", href: "/live/start", icon: Radio, color: "bg-red-500" },
-    ],
-    label: [
-      { label: "New Release", href: "/label?tab=release", icon: Upload, color: "bg-primary" },
-    ],
-    creator: [
-      { label: "Upload", href: "/creator?tab=upload", icon: Upload, color: "bg-primary" },
-      { label: "Go Live", href: "/live/start", icon: Radio, color: "bg-red-500" },
-    ],
-    comedian: [
-      { label: "Upload Skit", href: "/creator?tab=upload", icon: Upload, color: "bg-primary" },
-      { label: "Go Live", href: "/live/start", icon: Radio, color: "bg-red-500" },
-    ],
-    filmmaker: [
-      { label: "Upload Film", href: "/film?tab=upload", icon: Upload, color: "bg-primary" },
-      { label: "Premiere", href: "/film/premieres", icon: Calendar, color: "bg-purple-500" },
-    ],
-    cultural_educator: [
-      { label: "Archive", href: "/culture-studio?tab=upload", icon: Upload, color: "bg-primary" },
-    ],
-    event_organizer: [
-      { label: "Create Event", href: "/events?tab=create", icon: Calendar, color: "bg-primary" },
-      { label: "Go Live", href: "/live/start", icon: Radio, color: "bg-red-500" },
-    ],
-    brand: [
-      { label: "New Campaign", href: "/brand/campaigns?new=true", icon: Megaphone, color: "bg-primary" },
-    ],
+// Quick actions based on mode
+const getQuickActions = (mode: ActiveMode) => {
+  switch (mode) {
+    case "artist":
+      return [
+        { label: "Upload", href: "/artist?tab=upload", icon: Upload },
+        { label: "Go Live", href: "/artist/live", icon: Radio },
+      ]
+    case "creator":
+      return [
+        { label: "Upload", href: "/creator?tab=upload", icon: Upload },
+        { label: "Go Live", href: "/creator/live", icon: Radio },
+      ]
+    case "filmmaker":
+      return [
+        { label: "Upload Film", href: "/film?tab=upload", icon: Upload },
+        { label: "Premiere", href: "/film/premieres", icon: Calendar },
+      ]
+    default:
+      return []
   }
-  return actions[userType] || []
-}
-
-const mobileNav = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Search", href: "/search", icon: Search },
-  { label: "Library", href: "/library", icon: Library },
-  { label: "Profile", href: "/profile", icon: User },
-]
-
-// Mobile nav for creators/artists
-const getCreatorMobileNav = (userType: UserType) => {
-  if (["artist", "creator", "comedian", "filmmaker", "cultural_educator", "event_organizer"].includes(userType)) {
-    return [
-      { label: "Home", href: "/", icon: Home },
-      { label: "Studio", href: userType === "artist" ? "/artist" : userType === "filmmaker" ? "/film" : userType === "cultural_educator" ? "/culture-studio" : userType === "event_organizer" ? "/events" : "/creator", icon: Zap },
-      { label: "Upload", href: "/upload", icon: Upload },
-      { label: "Profile", href: "/profile", icon: User },
-    ]
-  }
-  return mobileNav
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const { currentTrack, isFullScreen, setIsFullScreen } = usePlayer()
+  const { user, activeMode, setActiveMode, getAvailableModes, hasCapability, canAccessMode } = useUser()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { currentTrack, isFullScreen } = usePlayer()
-  const { user } = useUser()
+  const [modeSwitcherOpen, setModeSwitcherOpen] = useState(false)
 
-  const userType = user?.type || "listener"
-  const sidebarLinks = getSidebarLinks(userType)
-  const quickActions = getQuickActions(userType)
-  const mobileTabs = getCreatorMobileNav(userType)
-
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/"
-    return pathname.startsWith(href.split("?")[0])
-  }
-
-  const getUserTypeLabel = () => {
-    const labels: Record<UserType, string> = {
-      listener: "Listener",
-      artist: "Artist",
-      label: "Label",
-      creator: "Creator",
-      comedian: "Comedian",
-      filmmaker: "Filmmaker",
-      cultural_educator: "Educator",
-      event_organizer: "Organizer",
-      brand: "Brand",
-    }
-    return labels[userType]
-  }
+  const sidebarLinks = getSidebarLinks(activeMode, hasCapability)
+  const quickActions = getQuickActions(activeMode)
+  const availableModes = getAvailableModes()
+  const ModeIcon = modeIcons[activeMode]
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-background">
-      {/* Top Nav */}
-      <header className="glass-strong sticky top-0 z-50 flex h-14 items-center gap-3 px-4 lg:px-6">
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-muted-foreground hover:text-foreground lg:hidden">
-          {sidebarOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
+    <div className="flex h-dvh flex-col bg-background">
+      {/* Top Header */}
+      <header className="glass-subtle sticky top-0 z-40 flex h-14 items-center justify-between border-b border-border/50 px-4">
+        {/* Logo + Mode Switcher */}
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2">
             <span className="font-display text-lg font-black tracking-tighter text-foreground sm:text-xl">
               Afri<span className="bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">Stream</span>
             </span>
-          </div>
-        </Link>
+          </Link>
 
-        {/* Quick Actions for Creators */}
-        {quickActions.length > 0 && (
-          <div className="ml-2 hidden items-center gap-2 md:flex">
-            {quickActions.map(action => (
-              <Link key={action.label} href={action.href}
-                className={cn("flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90", action.color)}>
-                <action.icon className="size-3.5" />
-                {action.label}
+          {/* Mode Switcher Button */}
+          {availableModes.length > 1 && (
+            <div className="relative">
+              <button
+                onClick={() => setModeSwitcherOpen(!modeSwitcherOpen)}
+                className="flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+              >
+                <ModeIcon className="size-3.5" />
+                {modeInfo[activeMode].name}
+                <ChevronDown className={cn("size-3 transition-transform", modeSwitcherOpen && "rotate-180")} />
+              </button>
+
+              {/* Mode Dropdown */}
+              {modeSwitcherOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setModeSwitcherOpen(false)} />
+                  <div className="absolute left-0 top-full z-50 mt-2 w-64 rounded-xl border border-border/50 bg-card/95 p-2 shadow-xl backdrop-blur-xl">
+                    <div className="mb-2 px-2 py-1">
+                      <p className="text-xs font-medium text-muted-foreground">Switch Mode</p>
+                    </div>
+                    {availableModes.map((mode) => {
+                      const Icon = modeIcons[mode]
+                      const info = modeInfo[mode]
+                      return (
+                        <button
+                          key={mode}
+                          onClick={() => {
+                            setActiveMode(mode)
+                            setModeSwitcherOpen(false)
+                          }}
+                          className={cn(
+                            "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors",
+                            activeMode === mode ? "bg-primary/15 text-primary" : "hover:bg-muted"
+                          )}
+                        >
+                          <div className={cn(
+                            "flex size-8 items-center justify-center rounded-lg",
+                            activeMode === mode ? "bg-primary/20" : "bg-muted"
+                          )}>
+                            <Icon className="size-4" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">{info.name}</p>
+                            <p className="text-xs text-muted-foreground">{info.description}</p>
+                          </div>
+                          {activeMode === mode && <Check className="size-4 text-primary" />}
+                        </button>
+                      )
+                    })}
+
+                    {/* Upgrade prompt if not creator_pro */}
+                    {user?.subscriptionTier !== "creator_pro" && (
+                      <div className="mt-2 border-t border-border/50 pt-2">
+                        <Link
+                          href="/subscriptions"
+                          onClick={() => setModeSwitcherOpen(false)}
+                          className="flex items-center gap-3 rounded-lg bg-gradient-to-r from-primary/20 to-amber-500/20 px-3 py-2.5 transition-colors hover:from-primary/30 hover:to-amber-500/30"
+                        >
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-amber-500">
+                            <Crown className="size-4 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">Unlock Creator Tools</p>
+                            <p className="text-xs text-muted-foreground">Upgrade to Creator Pro</p>
+                          </div>
+                          <ChevronRight className="size-4 text-muted-foreground" />
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* World Tabs - Desktop */}
+        {activeMode !== "admin" && (
+          <nav className="hidden items-center gap-1 lg:flex">
+            {worldTabs.map((tab) => (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={cn(
+                  "flex items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors",
+                  (tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href))
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <tab.icon className="size-4" />
+                {tab.label}
               </Link>
             ))}
-          </div>
+          </nav>
         )}
 
-        <div className="mx-auto hidden w-full max-w-md lg:block">
-          <Link href="/search" className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted">
-            <Search className="size-4" />
-            <span>Search music, movies, creators...</span>
-          </Link>
-        </div>
+        {/* Right side */}
+        <div className="flex items-center gap-2">
+          {/* Quick Actions for Creator modes */}
+          {quickActions.map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              className="hidden items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:flex"
+            >
+              <action.icon className="size-3.5" />
+              {action.label}
+            </Link>
+          ))}
 
-        <div className="ml-auto flex items-center gap-3">
-          <Link href="/search" className="text-muted-foreground hover:text-foreground lg:hidden">
-            <Search className="size-5" />
-          </Link>
-          <button className="relative text-muted-foreground hover:text-foreground">
-            <Bell className="size-5" />
-            <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">3</span>
-          </button>
-          <Link href="/profile" className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-full bg-primary/20 text-primary hover:bg-primary/30">
-              <User className="size-4" />
-            </div>
-            {userType !== "listener" && (
-              <span className="hidden text-xs font-medium text-muted-foreground lg:block">{getUserTypeLabel()}</span>
-            )}
-          </Link>
-        </div>
-      </header>
-
-      {/* World Tabs */}
-      <nav className="no-scrollbar flex items-center gap-1 overflow-x-auto border-b border-border bg-background px-4 lg:px-6">
-        {worldTabs.map(tab => (
-          <Link key={tab.href} href={tab.href}
-            className={cn(
-              "flex items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors",
-              isActive(tab.href)
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            )}>
-            <tab.icon className="size-4" />
-            {tab.label}
-          </Link>
-        ))}
-        <div className="ml-auto flex items-center gap-2">
+          {/* Merch + Hubs + Subscribe */}
           <Link href="/merch" className={cn(
             "hidden whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors lg:flex items-center gap-1.5",
             pathname.startsWith("/merch") ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
@@ -308,154 +297,183 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <ShoppingBag className="size-4" />
             Merch
           </Link>
-          <Link href="/hubs" className={cn(
-            "hidden whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors lg:block",
-            pathname.startsWith("/hubs") ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
-          )}>
-            Hubs
-          </Link>
           <Link href="/subscriptions" className={cn(
             "hidden whitespace-nowrap border-b-2 px-3 py-2.5 text-sm font-medium transition-colors lg:block",
             pathname.startsWith("/subscriptions") ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
           )}>
             Subscribe
           </Link>
-        </div>
-      </nav>
 
+          {/* Search + Notifications + Profile */}
+          <Link href="/search" className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden">
+            <Search className="size-5" />
+          </Link>
+          <button className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+            <Bell className="size-5" />
+          </button>
+          <Link href="/profile" className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-muted">
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="size-full object-cover" />
+            ) : (
+              <User className="size-5 text-muted-foreground" />
+            )}
+          </Link>
+          <button onClick={() => setSidebarOpen(true)} className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden">
+            <Menu className="size-5" />
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Desktop */}
-        <aside className={cn(
-          "hidden w-56 flex-col border-r border-border bg-sidebar lg:flex",
-          "overflow-y-auto py-4"
-        )}>
-          <nav className="flex flex-col gap-0.5 px-3">
-            {sidebarLinks.map((link, idx) => 
-              link.isDivider ? (
-                <div key={`divider-${idx}`} className="mt-4 mb-2 px-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{link.dividerLabel}</p>
-                </div>
-              ) : (
-                <Link key={link.label} href={link.href}
+        {/* Desktop Sidebar */}
+        <aside className="hidden w-60 shrink-0 flex-col border-r border-border/50 bg-sidebar lg:flex">
+          <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+            {sidebarLinks.map((link, i) => {
+              if (link.isDivider) {
+                return (
+                  <div key={i} className="pb-1 pt-4">
+                    <p className="px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{link.dividerLabel}</p>
+                  </div>
+                )
+              }
+              const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href.split("?")[0])
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                    isActive(link.href)
-                      ? "bg-sidebar-accent text-sidebar-primary"
+                    isActive
+                      ? "bg-primary/15 font-medium text-primary"
                       : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                  )}>
+                  )}
+                >
                   <link.icon className="size-4" />
                   {link.label}
                 </Link>
               )
-            )}
+            })}
           </nav>
 
-          {/* Settings always at bottom */}
-          <div className="mt-auto border-t border-sidebar-border px-3 pt-4">
-            <Link href="/settings" className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-              isActive("/settings")
-                ? "bg-sidebar-accent text-sidebar-primary"
-                : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-            )}>
-              <Settings className="size-4" />
-              Settings
-            </Link>
-            {userType !== "listener" && (
-              <Link href="/admin" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground">
-                <Settings className="size-4" /> Admin
+          {/* Subscription Badge */}
+          {user && (
+            <div className="border-t border-border/50 p-3">
+              <Link
+                href="/subscriptions"
+                className={cn(
+                  "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
+                  user.subscriptionTier === "platinum" || user.subscriptionTier === "creator_pro"
+                    ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400"
+                    : "bg-muted hover:bg-muted/80"
+                )}
+              >
+                {user.subscriptionTier === "platinum" || user.subscriptionTier === "creator_pro" ? (
+                  <Crown className="size-4" />
+                ) : (
+                  <Zap className="size-4" />
+                )}
+                <span className="font-medium">{tierInfo[user.subscriptionTier].name}</span>
+                {user.subscriptionTier === "free" && (
+                  <span className="ml-auto text-xs text-primary">Upgrade</span>
+                )}
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </aside>
 
-        {/* Mobile Sidebar Overlay */}
-        {sidebarOpen && (
-          <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setSidebarOpen(false)}>
-            <div className="absolute inset-0 bg-black/60" />
-            <aside className="absolute left-0 top-14 h-full w-64 overflow-y-auto bg-sidebar p-4" onClick={e => e.stopPropagation()}>
-              {/* User type badge */}
-              {userType !== "listener" && (
-                <div className="mb-4 flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-2">
-                  <Zap className="size-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">{getUserTypeLabel()} Mode</span>
-                </div>
-              )}
-
-              {/* Quick actions for mobile */}
-              {quickActions.length > 0 && (
-                <div className="mb-4 flex gap-2">
-                  {quickActions.map(action => (
-                    <Link key={action.label} href={action.href} onClick={() => setSidebarOpen(false)}
-                      className={cn("flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2.5 text-xs font-medium text-white", action.color)}>
-                      <action.icon className="size-4" />
-                      {action.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-
-              <nav className="flex flex-col gap-0.5">
-                {sidebarLinks.map((link, idx) => 
-                  link.isDivider ? (
-                    <div key={`divider-${idx}`} className="mt-4 mb-2 px-3">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{link.dividerLabel}</p>
-                    </div>
-                  ) : (
-                    <Link key={link.label} href={link.href} onClick={() => setSidebarOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
-                        isActive(link.href)
-                          ? "bg-sidebar-accent text-sidebar-primary"
-                          : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                      )}>
-                      <link.icon className="size-4" />
-                      {link.label}
-                    </Link>
-                  )
-                )}
-              </nav>
-              <div className="mt-6 border-t border-sidebar-border pt-4">
-                <Link href="/hubs" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
-                  <Globe className="size-4" /> Country Hubs
-                </Link>
-                <Link href="/subscriptions" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
-                  <Crown className="size-4" /> Subscriptions
-                </Link>
-                <Link href="/settings" onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
-                  <Settings className="size-4" /> Settings
-                </Link>
-              </div>
-            </aside>
-          </div>
-        )}
-
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className={cn("pb-36", currentTrack ? "pb-52" : "pb-36")}>
-            {children}
-          </div>
-        </main>
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
+
+      {/* Mobile Bottom Nav */}
+      {activeMode !== "admin" && (
+        <nav className="glass-strong flex h-16 items-center justify-around border-t border-border/50 lg:hidden">
+          {worldTabs.slice(0, 5).map((tab) => {
+            const isActive = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href)
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={cn(
+                  "flex flex-col items-center gap-0.5 px-3 py-2 text-[10px]",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <tab.icon className={cn("size-5", isActive && "fill-primary/20")} />
+                {tab.label}
+              </Link>
+            )
+          })}
+        </nav>
+      )}
+
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
+          <aside className="fixed inset-y-0 right-0 z-50 w-72 bg-sidebar p-4 shadow-2xl lg:hidden">
+            <div className="mb-4 flex items-center justify-between">
+              <span className="font-display text-lg font-bold">Menu</span>
+              <button onClick={() => setSidebarOpen(false)} className="rounded-full p-1 hover:bg-muted">
+                <X className="size-5" />
+              </button>
+            </div>
+
+            {/* Mode Switcher in Mobile */}
+            {availableModes.length > 1 && (
+              <div className="mb-4 rounded-lg bg-muted/50 p-2">
+                <p className="mb-2 px-2 text-xs font-medium text-muted-foreground">Current Mode</p>
+                <div className="flex flex-wrap gap-1">
+                  {availableModes.map((mode) => {
+                    const Icon = modeIcons[mode]
+                    return (
+                      <button
+                        key={mode}
+                        onClick={() => setActiveMode(mode)}
+                        className={cn(
+                          "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                          activeMode === mode ? "bg-primary text-primary-foreground" : "bg-background hover:bg-muted"
+                        )}
+                      >
+                        <Icon className="size-3.5" />
+                        {modeInfo[mode].name}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            <nav className="space-y-1">
+              {sidebarLinks.map((link, i) => {
+                if (link.isDivider) {
+                  return (
+                    <div key={i} className="pb-1 pt-4">
+                      <p className="px-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{link.dividerLabel}</p>
+                    </div>
+                  )
+                }
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50"
+                  >
+                    <link.icon className="size-4" />
+                    {link.label}
+                  </Link>
+                )
+              })}
+            </nav>
+          </aside>
+        </>
+      )}
 
       {/* Audio Player */}
       {currentTrack && !isFullScreen && <MiniPlayer />}
-      {isFullScreen && <FullScreenPlayer />}
-
-      {/* Mobile Bottom Nav - User type aware */}
-      <nav className="glass-strong fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-border py-2 lg:hidden"
-        style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}>
-        {mobileTabs.map(item => (
-          <Link key={item.label} href={item.href}
-            className={cn(
-              "flex flex-col items-center gap-0.5 text-xs transition-colors",
-              isActive(item.href) ? "text-primary" : "text-muted-foreground"
-            )}>
-            <item.icon className="size-5" />
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+      {currentTrack && isFullScreen && <FullScreenPlayer />}
     </div>
   )
 }

@@ -451,7 +451,7 @@ function CulturalEducatorHome() {
 
 // Main Page
 export default function HomePage() {
-  const { user, isLoading } = useUser()
+  const { user, isLoading, activeMode } = useUser()
 
   if (isLoading) {
     return (
@@ -463,16 +463,14 @@ export default function HomePage() {
     )
   }
 
-  switch (user?.userType) {
+  switch (activeMode) {
     case "artist":
-    case "label":
       return <ArtistHome />
     case "creator":
-    case "comedian":
       return <CreatorHome />
     case "filmmaker":
       return <FilmmakerHome />
-    case "cultural_educator":
+    case "educator":
       return <CulturalEducatorHome />
     default:
       return <ListenerHome />
