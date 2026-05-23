@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import { Upload, Music, Image as ImageIcon, X, Plus, Info, CheckCircle, Loader2, ChevronRight, Users, Globe, DollarSign, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

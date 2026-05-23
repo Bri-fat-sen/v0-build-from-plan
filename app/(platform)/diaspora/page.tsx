@@ -3,7 +3,7 @@ import { useState } from "react"
 import { mockDiasporaHubs, mockEvents, mockArtists, mockCreators } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { MapPin, Calendar, Users, Music, Video, Globe, ChevronRight, Star, Heart, Bell, Search, Filter, ArrowRight } from "lucide-react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 
 // Near you events (local diaspora events)

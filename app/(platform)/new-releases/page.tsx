@@ -1,7 +1,7 @@
 "use client"
 import { mockTracks, mockAlbums, mockArtists, mockMovies, mockCreators, formatNumber } from "@/lib/mock-data"
 import { usePlayer } from "@/lib/player-context"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { Play, Clock, TrendingUp, Sparkles, Film, Music, Users, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"

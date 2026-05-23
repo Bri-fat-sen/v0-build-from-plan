@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useUser } from "@/lib/user-context"
 import { mockArtists, mockCreators, mockMovies, formatNumber } from "@/lib/mock-data"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { 
   Heart, TrendingUp, Music, Film, Users, DollarSign, 

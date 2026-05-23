@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { mockArtists, formatNumber } from "@/lib/mock-data"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { Play, TrendingUp, TrendingDown, Minus, Crown, Users, Music, Disc, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"

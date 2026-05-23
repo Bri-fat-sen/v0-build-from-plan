@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { mockTracks, mockArtists, formatNumber } from "@/lib/mock-data"
 import { Play, TrendingUp, TrendingDown, Minus, ChevronRight, Crown, Flame, Share2 } from "lucide-react"

@@ -1,6 +1,6 @@
 "use client"
 import { use } from "react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { mockMovies } from "@/lib/mock-data"
 import { MovieCard } from "@/components/content-card"

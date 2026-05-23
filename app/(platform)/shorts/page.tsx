@@ -1,5 +1,5 @@
 "use client"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
 import { Play, Pause, Heart, MessageCircle, Share2, Music2, Plus, Volume2, VolumeX, ChevronUp, ChevronDown, Bookmark, MoreHorizontal } from "lucide-react"

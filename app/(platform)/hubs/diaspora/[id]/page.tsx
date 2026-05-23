@@ -4,7 +4,7 @@ import Link from "next/link"
 import { mockDiasporaHubs, mockArtists, mockEvents, mockCreators } from "@/lib/mock-data"
 import { ArtistCard, CreatorCard, SectionHeader } from "@/components/content-card"
 import { ArrowLeft, Users, Calendar, MapPin, Music } from "lucide-react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 
 export default function DiasporaHubPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)

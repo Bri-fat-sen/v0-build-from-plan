@@ -1,6 +1,6 @@
 "use client"
 import { use } from "react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import { mockArtists, mockTracks, mockAlbums, formatNumber } from "@/lib/mock-data"
 import { TrackRow, AlbumCard, ArtistCard } from "@/components/content-card"
 import { usePlayer } from "@/lib/player-context"

@@ -1,6 +1,6 @@
 "use client"
 import { use } from "react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import { cultureTopics } from "@/lib/mock-data"
 import { Play, BookOpen, ArrowLeft } from "lucide-react"
 import Link from "next/link"

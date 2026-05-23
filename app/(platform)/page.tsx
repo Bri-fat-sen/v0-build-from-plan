@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { 
   Play, ChevronRight, TrendingUp, MapPin, Zap, Mic, Film, Video, BookOpen, Calendar, 

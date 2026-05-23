@@ -491,7 +491,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
           <Link href="/profile" className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-muted ring-2 ring-transparent transition-all hover:ring-primary/50">
             {user?.avatar ? (
-              <img src={user.avatar} alt={user.name} className="size-full object-cover" />
+              <img
+                src={user.avatar}
+                alt={user.name ?? "User"}
+                className="size-full object-cover"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none" }}
+              />
             ) : (
               <User className="size-5 text-muted-foreground" />
             )}

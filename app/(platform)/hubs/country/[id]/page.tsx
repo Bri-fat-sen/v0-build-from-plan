@@ -1,7 +1,7 @@
 "use client"
 import { use } from "react"
 import Link from "next/link"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import { mockCountryHubs, mockArtists, mockMovies, mockTracks, mockCreators } from "@/lib/mock-data"
 import { ArtistCard, MovieCard, TrackRow, CreatorCard, SectionHeader } from "@/components/content-card"
 import { ArrowLeft, MapPin, Music, Film, Users, Globe } from "lucide-react"

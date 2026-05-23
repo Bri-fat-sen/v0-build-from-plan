@@ -1,5 +1,5 @@
 "use client"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { Play, Clock, Plus, Share2, Download, Mic, TrendingUp, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"

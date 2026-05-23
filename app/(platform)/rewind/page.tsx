@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { mockArtists, mockTracks, genres, mockCountryHubs } from "@/lib/mock-data"
 import { Share2, Download, ChevronRight, ChevronLeft, Music, Clock, Globe, Heart, Zap, Users, MapPin, Headphones, Sparkles } from "lucide-react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import { cn } from "@/lib/utils"
 
 // Rewind data for a user

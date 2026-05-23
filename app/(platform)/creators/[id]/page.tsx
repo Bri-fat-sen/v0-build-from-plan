@@ -1,6 +1,6 @@
 "use client"
 import { use, useState } from "react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import { mockCreators, formatNumber } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { Play, UserPlus, Share2, MapPin, Heart, DollarSign, ShoppingBag, Calendar } from "lucide-react"

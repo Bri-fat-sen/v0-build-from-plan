@@ -1,5 +1,5 @@
 "use client"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { mockMovies, movieCategories } from "@/lib/mock-data"
 import { MovieCard, SectionHeader } from "@/components/content-card"

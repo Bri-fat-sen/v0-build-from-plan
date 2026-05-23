@@ -1,5 +1,5 @@
 "use client"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { mockEvents } from "@/lib/mock-data"
 import { SectionHeader } from "@/components/content-card"

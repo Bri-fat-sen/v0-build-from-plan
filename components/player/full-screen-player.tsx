@@ -4,7 +4,7 @@ import {
   Play, Pause, SkipForward, SkipBack, Heart, Shuffle, Repeat, Repeat1,
   ChevronDown, ListMusic, Mic2, Share2, Plus, Volume2, Settings, Moon,
 } from "lucide-react"
-import Image from "next/image"
+import { SafeImage } from "@/components/safe-image"
 
 export function FullScreenPlayer() {
   const {
@@ -19,7 +19,7 @@ export function FullScreenPlayer() {
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
       {/* Background blur */}
       <div className="absolute inset-0 overflow-hidden">
-        <Image src={currentTrack.coverArt} alt="" fill className="object-cover opacity-20 blur-3xl scale-110" />
+        <SafeImage src={currentTrack.coverArt} alt="" fill className="object-cover opacity-20 blur-3xl scale-110" fallbackType="music" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
       </div>
 
@@ -56,7 +56,7 @@ export function FullScreenPlayer() {
           <>
             {/* Album Art */}
             <div className="relative aspect-square w-full max-w-xs overflow-hidden rounded-2xl glow-orange">
-              <Image src={currentTrack.coverArt} alt={currentTrack.title} fill className="object-cover" />
+              <SafeImage src={currentTrack.coverArt} alt={currentTrack.title} fill className="object-cover" fallbackType="music" />
             </div>
 
             {/* Track Info */}

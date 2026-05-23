@@ -1,5 +1,5 @@
 "use client"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 import Link from "next/link"
 import { useState } from "react"
 import { Bell, Heart, MessageCircle, UserPlus, Music, Film, DollarSign, Star, Gift, Mic, Play, Check, Settings, Trash2 } from "lucide-react"

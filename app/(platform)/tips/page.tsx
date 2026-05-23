@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Gift, Coins, Flame, Heart, Star, Zap, Crown, Sparkles, Send, X, Plus, Minus, History, Info } from "lucide-react"
-import Image from "next/image"
+import { SafeImage as Image } from "@/components/safe-image"
 
 // Virtual gift types with increasing value
 const giftTypes = [
