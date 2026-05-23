@@ -175,7 +175,7 @@ function ListenerHome() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-3">
                 <p className="truncate text-sm font-medium text-white">{creator.name}</p>
-                <p className="text-xs text-white/70">{formatNumber(creator.followers)} followers</p>
+                <p className="text-xs text-white/70">{formatNumber(creator.subscribers)} subscribers</p>
               </div>
               <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/50 px-2 py-0.5 text-xs text-white backdrop-blur-sm">
                 <Eye className="size-3" /> {Math.floor(Math.random() * 500 + 100)}K
