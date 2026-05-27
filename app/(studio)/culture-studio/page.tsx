@@ -48,7 +48,14 @@ export default function CultureStudioPage() {
       {/* Categories */}
       <StudioSection title="Content Categories">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {formatNumber.map(topic => (
+          {[
+            { id: "1", title: "Oral Traditions", category: "Heritage", items: 342 },
+            { id: "2", title: "Traditional Crafts", category: "Arts", items: 256 },
+            { id: "3", title: "Indigenous Languages", category: "Languages", items: 189 },
+            { id: "4", title: "Historical Archives", category: "History", items: 421 },
+            { id: "5", title: "Music & Dance", category: "Performance", items: 567 },
+            { id: "6", title: "Culinary Heritage", category: "Food", items: 234 },
+          ].map(topic => (
             <div key={topic.id} className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 transition-colors hover:bg-muted/50">
               <div className="flex items-center gap-3">
                 <div className="flex size-9 items-center justify-center rounded-lg bg-primary/15">
@@ -59,7 +66,7 @@ export default function CultureStudioPage() {
                   <p className="text-xs text-muted-foreground">{topic.category}</p>
                 </div>
               </div>
-              <span className="font-mono text-sm tabular-nums text-muted-foreground">{topic.items}</span>
+              <span className="font-mono text-sm tabular-nums text-muted-foreground">{formatNumber(topic.items)}</span>
             </div>
           ))}
         </div>
@@ -78,7 +85,14 @@ export default function CultureStudioPage() {
               </tr>
             </thead>
             <tbody>
-              {mockLanguages.map(lang => (
+              {[
+                { id: "1", name: "Yoruba", region: "West Africa", speakers: "45M" },
+                { id: "2", name: "Igbo", region: "West Africa", speakers: "30M" },
+                { id: "3", name: "Swahili", region: "East Africa", speakers: "100M+" },
+                { id: "4", name: "Amharic", region: "East Africa", speakers: "32M" },
+                { id: "5", name: "Zulu", region: "South Africa", speakers: "12M" },
+                { id: "6", name: "Sotho", region: "South Africa", speakers: "8M" },
+              ].map(lang => (
                 <tr key={lang.id} className="border-b border-border/50 transition-colors hover:bg-muted/50">
                   <td className="p-3 font-medium text-foreground">{lang.name}</td>
                   <td className="p-3 text-muted-foreground">{lang.region}</td>
